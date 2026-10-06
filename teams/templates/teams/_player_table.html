@@ -1,0 +1,31 @@
+<input class="input" style="max-width:260px;margin-bottom:12px" type="search" placeholder="Caută jucător…" data-filter="#{{ table_id }}">
+<div class="table-wrap">
+  <table class="data sortable" id="{{ table_id }}">
+    <thead>
+      <tr>
+        <th class="sortable">Jucător</th>
+        <th class="num sortable" data-type="num" title="Meciuri jucate">M</th>
+        <th class="num sortable" data-type="num" title="Titular">Tit.</th>
+        <th class="num sortable" data-type="num">Minute</th>
+        <th class="num sortable" data-type="num">Goluri</th>
+        <th class="num sortable" data-type="num" title="Minute per gol">Min/gol</th>
+        <th class="num sortable" data-type="num" title="Cartonașe galbene">🟨</th>
+        <th class="num sortable" data-type="num" title="Cartonașe roșii">🟥</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for p in players %}
+      <tr>
+        <td><a href="{{ p.get_absolute_url }}">{% if p.number %}<b>{{ p.number }}.</b> {% endif %}{{ p.name }}</a>{% if p.position %} <span class="small muted">{{ p.position }}</span>{% endif %}</td>
+        <td class="num">{{ p.apps }}</td>
+        <td class="num">{{ p.starts }}</td>
+        <td class="num">{{ p.minutes }}</td>
+        <td class="num pts">{{ p.goals }}</td>
+        <td class="num" data-value="{{ p.minutes_per_goal|default:'9999' }}">{{ p.minutes_per_goal|default:"–" }}</td>
+        <td class="num">{{ p.yellows }}</td>
+        <td class="num">{{ p.reds }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

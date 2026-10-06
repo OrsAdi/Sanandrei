@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}Meciuri{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">{{ COMPETITION_NAME }} · {{ SEASON }}</div><h1>Program și rezultate</h1><p>{{ played|length }} meciuri disputate · {{ upcoming|length }} rămase</p></div></section>{% endblock %}
+{% block content %}
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-title"><h2>Următoarele meciuri</h2></div>
+    {% for m in upcoming %}{% include "teams/_fixture.html" %}{% empty %}<p class="muted">Sezonul s-a încheiat.</p>{% endfor %}
+  </div>
+  <div class="card">
+    <div class="card-title"><h2>Rezultate</h2></div>
+    {% for m in played %}{% include "teams/_fixture.html" with result=m.our_result %}{% empty %}<p class="muted">Niciun meci disputat încă.</p>{% endfor %}
+  </div>
+</div>
+
+<h2 class="section-title" id="etape">Toate meciurile pe etape</h2>
+<div class="round-picker">
+  {% for r in rounds %}<a href="?etapa={{ r }}#etape" class="{% if r == selected_round %}active{% endif %}">{{ r }}</a>{% endfor %}
+</div>
+<div class="card">
+  <div class="card-title"><h3>Etapa {{ selected_round }}</h3></div>
+  {% for m in round_matches %}{% include "teams/_fixture.html" %}{% endfor %}
+</div>
+{% endblock %}

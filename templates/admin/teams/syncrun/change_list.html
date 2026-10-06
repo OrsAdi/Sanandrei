@@ -1,0 +1,15 @@
+{% extends "admin/change_list.html" %}
+{% block object-tools-items %}
+  <li>
+    <form method="post" action="{% url 'admin:teams_sync_now' %}" style="display:inline">
+      {% csrf_token %}
+      <button type="submit" class="button" style="padding:6px 12px">⟳ Sincronizează acum</button>
+    </form>
+  </li>
+  <li>
+    <form method="post" action="{% url 'admin:teams_sync_now' %}" style="display:inline">
+      {% csrf_token %}<input type="hidden" name="full" value="1">
+      <button type="submit" class="button" style="padding:6px 12px">Reimport complet</button>
+    </form>
+  </li>
+{% endblock %}

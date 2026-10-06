@@ -1,0 +1,90 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ CLUB_NAME }}{% endblock %} | {{ CLUB_NAME }}</title>
+  <meta name="description" content="{% block description %}Site-ul oficial al clubului {{ CLUB_NAME }} – rezultate, clasament și statistici din {{ COMPETITION_NAME }}, sezonul {{ SEASON }}.{% endblock %}">
+  <link rel="icon" href="{% static 'img/logo.jpg' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <div class="topbar">
+    <div class="container">
+      <span>{{ COMPETITION_NAME }} · Sezonul {{ SEASON }}</span>
+      <span>{% if last_sync %}Date actualizate: {{ last_sync|date:"d.m.Y H:i" }} · {% endif %}Sursa: <a href="{{ FRF_COMPETITION_URL }}" target="_blank" rel="noopener">frf-ajf.ro</a></span>
+    </div>
+  </div>
+
+  {% with url=request.resolver_match.url_name %}
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="{% url 'home' %}">
+        <img src="{% static 'img/logo.jpg' %}" alt="Sigla {{ CLUB_NAME }}">
+        <span class="brand-text"><strong>CS Sânandrei</strong><span>Fotbal · Timiș</span></span>
+      </a>
+      <button class="nav-toggle" aria-label="Meniu" aria-expanded="false" onclick="this.setAttribute('aria-expanded', document.getElementById('nav').classList.toggle('open'))">☰</button>
+      <nav class="nav" id="nav">
+        <a href="{% url 'home' %}" class="{% if url == 'home' %}active{% endif %}">Acasă</a>
+        <a href="{% url 'squad_list' %}" class="{% if url == 'squad_list' or url == 'player_detail' %}active{% endif %}">Lot</a>
+        <a href="{% url 'fixtures' %}" class="{% if url == 'fixtures' or url == 'match_detail' %}active{% endif %}">Meciuri</a>
+        <a href="{% url 'standings' %}" class="{% if url == 'standings' %}active{% endif %}">Clasament</a>
+        <a href="{% url 'stats' %}" class="{% if url == 'stats' %}active{% endif %}">Statistici</a>
+        <a href="{% url 'team_list' %}" class="{% if url == 'team_list' or url == 'team_detail' %}active{% endif %}">Echipe</a>
+        <a href="{% url 'news_list' %}" class="{% if url == 'news_list' or url == 'news_detail' %}active{% endif %}">Știri</a>
+        <a href="{% url 'contact' %}" class="{% if url == 'contact' %}active{% endif %}">Contact</a>
+        <a href="{% url 'shop:product_list' %}" class="cart-link">Magazin{% if cart_count %}<span class="badge-count">{{ cart_count }}</span>{% endif %}</a>
+      </nav>
+    </div>
+  </header>
+  {% endwith %}
+
+  <main>
+    {% block hero %}{% endblock %}
+    <div class="container">
+      {% if messages %}
+        <ul class="messages">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>{{ CLUB_NAME }}</h4>
+          <p>Clubul de fotbal al comunei Sânandrei, județul Timiș. Evoluăm în {{ COMPETITION_NAME }}.</p>
+          <p>📍 {{ CLUB_VENUE }}<br>✉️ {{ CLUB_EMAIL }}{% if CLUB_PHONE %}<br>📞 {{ CLUB_PHONE }}{% endif %}</p>
+        </div>
+        <div>
+          <h4>Echipa</h4>
+          <ul>
+            <li><a href="{% url 'squad_list' %}">Lotul</a></li>
+            <li><a href="{% url 'fixtures' %}">Program și rezultate</a></li>
+            <li><a href="{% url 'stats' %}">Statistici</a></li>
+            <li><a href="{% url 'shop:product_list' %}">Magazinul clubului</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Competiția</h4>
+          <ul>
+            <li><a href="{% url 'standings' %}">Clasament</a></li>
+            <li><a href="{% url 'team_list' %}">Echipele ligii</a></li>
+            <li><a href="{{ FRF_COMPETITION_URL }}" target="_blank" rel="noopener">AJF Timiș ↗</a></li>
+            <li><a href="{% url 'search' %}">Caută jucător</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© {% now "Y" %} {{ CLUB_NAME }}. Toate drepturile rezervate.</span>
+        <span>Datele competiției provin de pe frf-ajf.ro.</span>
+      </div>
+    </div>
+  </footer>
+  <script src="{% static 'js/site.js' %}" defer></script>
+</body>
+</html>

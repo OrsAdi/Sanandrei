@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ item.title }}{% endblock %}
+{% block description %}{{ item.summary|default:item.body|truncatewords:30 }}{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">{{ item.published_at|date:"j F Y" }}</div><h1>{{ item.title }}</h1>{% if item.summary %}<p>{{ item.summary }}</p>{% endif %}</div></section>{% endblock %}
+{% block content %}
+<article class="card prose">
+  {% if item.image %}<img src="{{ item.image.url }}" alt="" style="border-radius:12px;margin-bottom:16px">{% endif %}
+  {{ item.body|linebreaks }}
+</article>
+<p class="mt"><a class="btn btn-ghost" href="{% url 'news_list' %}">← Toate știrile</a></p>
+{% endblock %}

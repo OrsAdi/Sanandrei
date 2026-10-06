@@ -1,0 +1,22 @@
+{% comment %}Un rând de meci. Variabile: m (Match), perspective (Team, opțional), result (V/E/I, opțional){% endcomment %}
+<a class="fixture" href="{% url 'match_detail' m.pk %}">
+  <div class="when">
+    <b>Etapa {{ m.round }}</b>
+    {% if m.date %}{{ m.date|date:"D, d M" }} <br>{{ m.date|date:"H:i" }}{% endif %}
+  </div>
+  <div class="home{% if m.home.frf_id == OUR_TEAM_FRF_ID %} us{% endif %}">
+    <span>{{ m.home.name }}</span><img class="logo-sm" src="{{ m.home.logo_url }}" alt="" loading="lazy">
+  </div>
+  <div>
+    {% if m.is_finished %}
+      <div class="result">{{ m.home_score }} - {{ m.away_score }}</div>
+      {% if m.has_halftime %}<span class="ht">pauză {{ m.ht_home }}-{{ m.ht_away }}</span>{% endif %}
+    {% else %}
+      <div class="result pending">{% if m.date %}{{ m.date|date:"H:i" }}{% else %}–{% endif %}</div>
+    {% endif %}
+  </div>
+  <div class="away{% if m.away.frf_id == OUR_TEAM_FRF_ID %} us{% endif %}">
+    <img class="logo-sm" src="{{ m.away.logo_url }}" alt="" loading="lazy"><span>{{ m.away.name }}</span>
+  </div>
+  <div class="outcome">{% if result %}<span class="pill pill-{{ result }}">{{ result }}</span>{% endif %}</div>
+</a>

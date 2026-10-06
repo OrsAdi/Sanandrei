@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Caută{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">{{ COMPETITION_NAME }}</div><h1>Caută jucători și echipe</h1></div></section>{% endblock %}
+{% block content %}
+<form class="search-form card" method="get">
+  <input class="input" type="search" name="q" value="{{ q }}" placeholder="Nume jucător sau echipă (min. 2 litere)" autofocus>
+  <button class="btn" type="submit">Caută</button>
+</form>
+{% if q %}
+<div class="grid grid-2 mt">
+  <div class="card">
+    <h3>Jucători ({{ players|length }})</h3>
+    {% for p in players %}
+      <div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)">
+        <a href="{{ p.get_absolute_url }}">{{ p.name }}</a><span class="small muted">{{ p.team.name }}</span>
+      </div>
+    {% empty %}<p class="muted">Niciun rezultat.</p>{% endfor %}
+  </div>
+  <div class="card">
+    <h3>Echipe ({{ teams|length }})</h3>
+    {% for t in teams %}<a class="team-cell" style="padding:7px 0" href="{{ t.get_absolute_url }}"><img src="{{ t.logo_url }}" alt="">{{ t.name }}</a>{% empty %}<p class="muted">Niciun rezultat.</p>{% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

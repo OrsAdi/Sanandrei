@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}{{ match.home.name }} - {{ match.away.name }}{% endblock %}
+{% block hero %}
+<section class="match-hero">
+  <div class="container">
+    <div class="meta">{{ COMPETITION_NAME }} · Etapa {{ match.round }}{% if match.date %} · {{ match.date|date:"l, j F Y, H:i" }}{% endif %}</div>
+    <div class="versus">
+      <a class="team" href="{{ match.home.get_absolute_url }}" style="color:#fff"><img src="{{ match.home.logo_url }}" alt=""><div>{{ match.home.name }}</div>{% if home_row %}<div class="small" style="color:#aeb3bd;font-weight:400">Locul {{ home_row.position }} · {% form_pills home_row.form %}</div>{% endif %}</a>
+      <div>
+        {% if match.is_finished %}
+          <div class="score">{{ match.home_score }} - {{ match.away_score }}</div>
+          {% if match.has_halftime %}<div class="meta">Pauză: {{ match.ht_home }}-{{ match.ht_away }}</div>{% endif %}
+        {% else %}
+          <div class="score" style="font-size:2rem">{% if match.date %}{{ match.date|date:"H:i" }}{% else %}VS{% endif %}</div>
+        {% endif %}
+      </div>
+      <a class="team" href="{{ match.away.get_absolute_url }}" style="color:#fff"><img src="{{ match.away.logo_url }}" alt=""><div>{{ match.away.name }}</div>{% if away_row %}<div class="small" style="color:#aeb3bd;font-weight:400">Locul {{ away_row.position }} · {% form_pills away_row.form %}</div>{% endif %}</a>
+    </div>
+    <div class="meta">📍 {{ match.venue|default:"Teren nestabilit" }}{% if match.referee %} · Arbitru: {{ match.referee }}{% endif %}</div>
+  </div>
+</section>
+{% endblock %}
+{% block content %}
+{% if match.is_finished %}
+  {% if events %}
+  <div class="card">
+    <div class="card-title"><h2>Desfășurarea meciului</h2></div>
+    <ul class="timeline">
+      {% for e in events %}
+        <li>
+          <div class="h">{% if e.is_home %}{% include "teams/_event.html" %}{% endif %}</div>
+          <div class="min">{{ e.minute }}'</div>
+          <div class="a">{% if not e.is_home %}{% include "teams/_event.html" %}{% endif %}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if home_start or away_start %}
+  <div class="grid grid-2 mt">
+    <div class="card">{% include "teams/_lineup.html" with team=match.home starters=home_start bench=home_bench %}</div>
+    <div class="card">{% include "teams/_lineup.html" with team=match.away starters=away_start bench=away_bench %}</div>
+  </div>
+  {% elif not match.details_synced %}
+  <div class="card empty mt"><b>Detaliile meciului nu au fost încă importate.</b></div>
+  {% endif %}
+{% else %}
+  <div class="grid grid-2">
+    {% include "teams/_preview_side.html" with team=match.home r=home_row %}
+    {% include "teams/_preview_side.html" with team=match.away r=away_row %}
+  </div>
+{% endif %}
+
+{% if h2h %}
+<div class="card mt">
+  <div class="card-title"><h2>Meciuri directe în acest sezon</h2></div>
+  {% for m in h2h %}{% include "teams/_fixture.html" %}{% endfor %}
+</div>
+{% endif %}
+
+<p class="mt small muted">Sursa: <a href="{{ match.frf_url }}" target="_blank" rel="noopener">pagina meciului pe frf-ajf.ro ↗</a></p>
+{% endblock %}

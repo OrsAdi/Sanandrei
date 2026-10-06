@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}Clasament{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">{{ COMPETITION_NAME }} · {{ SEASON }}</div><h1>Clasament</h1><p>{% if upto %}După etapa {{ upto }}{% if upto != last_round %} (ultima disputată: {{ last_round }}){% endif %}{% else %}Nicio etapă disputată{% endif %}</p></div></section>{% endblock %}
+{% block content %}
+<div class="tabs">
+  <a href="?tip=all&etapa={{ upto }}" class="{% if venue == 'all' %}active{% endif %}">General</a>
+  <a href="?tip=home&etapa={{ upto }}" class="{% if venue == 'home' %}active{% endif %}">Acasă</a>
+  <a href="?tip=away&etapa={{ upto }}" class="{% if venue == 'away' %}active{% endif %}">Deplasare</a>
+</div>
+{% if rounds %}
+<div class="round-picker"><span class="muted small" style="align-self:center;margin-right:4px">După etapa:</span>
+  {% for r in rounds %}<a href="?tip={{ venue }}&etapa={{ r }}" class="{% if r == upto %}active{% endif %}">{{ r }}</a>{% endfor %}
+</div>
+{% endif %}
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>#</th><th>Echipa</th>
+          <th class="num" title="Meciuri">M</th><th class="num" title="Victorii">V</th><th class="num" title="Egaluri">E</th><th class="num" title="Înfrângeri">I</th>
+          <th class="num" title="Goluri marcate">GM</th><th class="num" title="Goluri primite">GP</th><th class="num" title="Golaveraj">GD</th>
+          <th class="num" title="Puncte">P</th><th class="num" title="Puncte pe meci">P/M</th><th>Forma</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for r in table %}
+        <tr class="{% if r.team.is_ours %}ours{% endif %}">
+          <td class="pos{% if venue == 'all' and r.position == 1 %} pos-promo{% endif %}">{{ r.position }}</td>
+          <td><a class="team-cell" href="{{ r.team.get_absolute_url }}"><img src="{{ r.team.logo_url }}" alt="" loading="lazy">{{ r.team.name }}</a></td>
+          <td class="num">{{ r.played }}</td><td class="num">{{ r.won }}</td><td class="num">{{ r.drawn }}</td><td class="num">{{ r.lost }}</td>
+          <td class="num">{{ r.gf }}</td><td class="num">{{ r.ga }}</td><td class="num">{{ r.gd|signed }}</td>
+          <td class="num pts">{{ r.points }}{% if r.adjustment %}<sup class="small muted" title="Puncte ajustate de comisii">{{ r.adjustment|signed }}</sup>{% endif %}</td>
+          <td class="num">{{ r.ppg }}</td>
+          <td class="nowrap">{% for res, m in r.form_matches %}<a href="{% url 'match_detail' m.pk %}" class="pill pill-{{ res }}" title="Etapa {{ m.round }}: {{ m.home.name }} {{ m.home_score }}-{{ m.away_score }} {{ m.away.name }}" style="margin-right:3px">{{ res }}</a>{% endfor %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="small muted" style="margin:14px 0 0">
+    {% if venue == 'all' %}<span style="display:inline-block;width:10px;height:10px;background:var(--win);border-radius:2px"></span> Locul 1 – baraj de promovare în Liga a III-a. {% endif %}
+    Departajare: puncte, golaveraj, goluri marcate (ca pe frf-ajf.ro). Forma = ultimele 5 meciuri; treceți cu mouse-ul peste pentru scor.
+  </p>
+</div>
+{% endblock %}

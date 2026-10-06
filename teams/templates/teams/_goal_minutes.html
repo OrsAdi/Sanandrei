@@ -1,0 +1,10 @@
+<div class="legend"><span><i style="background:var(--ink-2)"></i>Primite</span><span><i style="background:var(--orange)"></i>Marcate</span></div>
+{% for b in buckets %}
+<div class="bar-row">
+  <span class="muted">{{ b.label }}'</span>
+  <b class="right">{{ b.conceded }}</b>
+  <div class="bar against" title="{{ b.conceded }} primite"><i style="width:{{ b.conceded_pct }}%"></i></div>
+  <div class="bar for" title="{{ b.scored }} marcate"><i style="width:{{ b.scored_pct }}%"></i></div>
+  <b>{{ b.scored }}</b>
+</div>
+{% endfor %}

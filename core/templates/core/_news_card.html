@@ -1,0 +1,8 @@
+<a class="news-card" href="{{ item.get_absolute_url }}">
+  <div class="news-img">{% if item.image %}<img src="{{ item.image.url }}" alt="" loading="lazy">{% endif %}</div>
+  <div class="news-body">
+    <time>{{ item.published_at|date:"j F Y" }}</time>
+    <h3 style="margin:4px 0 6px">{{ item.title }}</h3>
+    {% if item.summary %}<p class="small muted" style="margin:0">{{ item.summary }}</p>{% endif %}
+  </div>
+</a>

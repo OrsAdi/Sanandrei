@@ -1,0 +1,17 @@
+<div class="card-title"><h3><img class="logo-sm" src="{{ team.logo_url }}" alt="" style="vertical-align:middle"> {{ team.name }}</h3></div>
+<h4 class="muted" style="text-transform:uppercase">Titulari</h4>
+<ul class="lineup">
+  {% for a in starters %}
+    <li><a href="{{ a.player.get_absolute_url }}">{% if a.player.number and team.is_ours %}<b>{{ a.player.number }}.</b> {% endif %}{{ a.player.name }}</a>
+      <span class="ev">{% for e in a.events %}{{ e.icon }}{{ e.minute }}' {% endfor %}{% if a.minute_out is not None %}🔻{{ a.minute_out }}'{% endif %}</span></li>
+  {% endfor %}
+</ul>
+{% if bench %}
+<h4 class="muted mt" style="text-transform:uppercase">Rezerve</h4>
+<ul class="lineup">
+  {% for a in bench %}
+    <li><a href="{{ a.player.get_absolute_url }}">{{ a.player.name }}</a>
+      <span class="ev">🔺{{ a.minute_in }}' {% for e in a.events %}{{ e.icon }}{{ e.minute }}' {% endfor %}</span></li>
+  {% endfor %}
+</ul>
+{% endif %}

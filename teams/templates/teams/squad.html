@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}Lotul{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">Sezonul {{ SEASON }}</div><h1>Lotul oficial</h1><p>{{ total_used }} jucători folosiți în {{ COMPETITION_NAME }}.</p></div></section>{% endblock %}
+{% block content %}
+
+{% for group in groups %}
+<section class="squad-section">
+  <h2 class="section-title">{{ group.label }} <span class="small muted">{{ group.players|length }}</span></h2>
+  <div class="squad-grid">
+    {% for player in group.players %}
+    <a class="player-card" href="{{ player.get_absolute_url }}">
+      <div class="player-photo">
+        {% if player.picture %}<img src="{{ player.picture }}" alt="{{ player.name }}" loading="lazy">{% else %}<span class="initials">{{ player.name|initials }}</span>{% endif %}
+        {% if player.number %}<span class="player-number">#{{ player.number }}</span>{% endif %}
+      </div>
+      <div class="player-info">
+        {% if player.position %}<div class="player-pos">{{ player.position }}</div>{% endif %}
+        <div class="player-name">{{ player.name }}</div>
+        <div class="player-mini">
+          <div><b>{{ player.apps }}</b><span>Meciuri</span></div>
+          <div><b>{{ player.goals }}</b><span>Goluri</span></div>
+          <div><b>{{ player.minutes }}'</b><span>Minute</span></div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% empty %}
+<div class="card empty"><b>Niciun jucător încă.</b>Importați datele cu <code>python manage.py sync_frf</code>.</div>
+{% endfor %}
+
+{% if others %}
+<h2 class="section-title">Alți jucători legitimați <span class="small muted">{{ others|length }}</span></h2>
+<p class="muted small">Jucători înregistrați la club pe frf-ajf.ro care nu au jucat încă în acest sezon.</p>
+<div class="chips">
+  {% for p in others %}<a class="chip" href="{{ p.get_absolute_url }}">{{ p.name }}{% if p.age %} <span class="muted">· {{ p.age }} ani</span>{% endif %}</a>{% endfor %}
+</div>
+{% endif %}
+
+{% if user.is_staff %}
+<p class="mt small muted">💡 Numerele, posturile, fotografiile și biografiile se completează din <a href="{% url 'admin:teams_player_changelist' %}?ai_nostri=1">Admin → Players</a>.</p>
+{% endif %}
+{% endblock %}

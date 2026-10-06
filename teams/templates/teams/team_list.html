@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}Echipele ligii{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">{{ COMPETITION_NAME }} · {{ SEASON }}</div><h1>Echipele ligii</h1><p>{{ table|length }} echipe. Alegeți o echipă pentru rezultate, jucători și statistici.</p></div></section>{% endblock %}
+{% block content %}
+<div class="squad-grid">
+  {% for r in table %}
+  <a class="player-card" href="{{ r.team.get_absolute_url }}"{% if r.team.is_ours %} style="border-bottom-color:var(--orange)"{% endif %}>
+    <div class="player-photo" style="background:#fff;height:150px;align-items:center">
+      <img src="{{ r.team.logo_url }}" alt="{{ r.team.name }}" style="width:auto;height:110px;object-fit:contain" loading="lazy">
+      <span class="player-number" style="font-size:1.6rem">{{ r.position }}</span>
+    </div>
+    <div class="player-info">
+      <div class="player-name">{{ r.team.name }}</div>
+      <div class="player-mini">
+        <div><b>{{ r.points }}</b><span>Puncte</span></div>
+        <div><b>{{ r.gf }}:{{ r.ga }}</b><span>Goluri</span></div>
+      </div>
+      <div class="center" style="margin-top:8px">{% form_pills r.form %}</div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

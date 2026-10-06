@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}{{ team.name }}{% endblock %}
+{% block hero %}
+<section class="page-hero">
+  <div class="container" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+    <img class="logo-lg" src="{{ team.logo_url }}" alt="Sigla {{ team.name }}">
+    <div>
+      <div class="eyebrow">{{ COMPETITION_NAME }}{% if row %} · Locul {{ row.position }}{% endif %}</div>
+      <h1>{{ team.name }}</h1>
+      <p>{% if team.venue %}📍 {{ team.venue }} · {% endif %}<a href="{{ team.frf_url }}" target="_blank" rel="noopener" style="color:#fff">Pagina pe frf-ajf.ro ↗</a></p>
+      {% if row %}<p>{% form_pills row.form True %}</p>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block content %}
+{% if row %}
+<div class="tiles">
+  <div class="tile dark"><b>{{ row.position }}</b><span>Loc</span><small>{{ row.points }} puncte</small></div>
+  <div class="tile"><b>{{ summary.won }}-{{ summary.drawn }}-{{ summary.lost }}</b><span>V-E-I</span></div>
+  <div class="tile"><b>{{ summary.gf }}:{{ summary.ga }}</b><span>Goluri</span><small>{{ summary.gf_avg }} marcate / meci</small></div>
+  <div class="tile"><b>{{ summary.home.won }}-{{ summary.home.drawn }}-{{ summary.home.lost }}</b><span>Acasă (V-E-I)</span></div>
+  <div class="tile"><b>{{ summary.away.won }}-{{ summary.away.drawn }}-{{ summary.away.lost }}</b><span>Deplasare (V-E-I)</span></div>
+  <div class="tile"><b>{{ summary.clean_sheets }}</b><span>Fără gol primit</span></div>
+</div>
+{% endif %}
+
+{% if h2h %}
+<div class="card mt">
+  <div class="card-title"><h2>Contra {{ CLUB_NAME }}</h2></div>
+  {% for m in h2h %}{% include "teams/_fixture.html" %}{% endfor %}
+</div>
+{% endif %}
+
+<div class="grid grid-2 mt">
+  <div class="card">
+    <div class="card-title"><h3>Rezultate</h3></div>
+    {% for m in played %}{% include "teams/_fixture.html" with result=m.team_result %}{% empty %}<p class="muted">Niciun meci disputat.</p>{% endfor %}
+  </div>
+  <div class="card">
+    <div class="card-title"><h3>Următoarele meciuri</h3></div>
+    {% for m in upcoming|slice:":8" %}{% include "teams/_fixture.html" %}{% empty %}<p class="muted">Niciun meci programat.</p>{% endfor %}
+  </div>
+</div>
+
+<div class="grid grid-2 mt">
+  {% if history_chart %}
+  <div class="card">
+    <div class="card-title"><h3>Evoluția în clasament</h3></div>
+    {% include "teams/_history_chart.html" with chart=history_chart %}
+  </div>
+  {% endif %}
+  <div class="card">
+    <div class="card-title"><h3>Când marchează și când primește</h3></div>
+    {% include "teams/_goal_minutes.html" with buckets=goal_minutes %}
+  </div>
+</div>
+
+{% if players %}
+<div class="card mt">
+  <div class="card-title"><h3>Jucători folosiți ({{ players|length }})</h3><span class="small muted">Click pe coloane pentru sortare</span></div>
+  {% include "teams/_player_table.html" with table_id="team-players" %}
+</div>
+{% endif %}
+{% endblock %}

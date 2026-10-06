@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Coșul meu{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">Magazin</div><h1>Coșul meu</h1></div></section>{% endblock %}
+{% block content %}
+<div class="card">
+  {% if items %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>Produs</th><th>Mărime</th><th class="num">Preț</th><th class="num">Cantitate</th><th class="num">Subtotal</th></tr></thead>
+      <tbody>
+      {% for i in items %}
+        <tr>
+          <td><a href="{{ i.product.get_absolute_url }}">{{ i.product.name }}</a></td>
+          <td>{{ i.size|default:"–" }}</td>
+          <td class="num">{{ i.product.price|floatformat:2 }} lei</td>
+          <td class="num">
+            <form method="post" action="{% url 'shop:cart_update' %}" style="display:inline-flex;gap:6px">
+              {% csrf_token %}<input type="hidden" name="key" value="{{ i.key }}">
+              <input class="input" type="number" name="quantity" value="{{ i.quantity }}" min="0" max="99" style="width:72px;padding:6px">
+              <button class="btn btn-ghost btn-sm" type="submit" title="Actualizează">↻</button>
+            </form>
+          </td>
+          <td class="num pts">{{ i.subtotal|floatformat:2 }} lei</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;flex-wrap:wrap;gap:12px">
+    <span class="small muted">Setați cantitatea la 0 pentru a elimina un produs.</span>
+    <div style="display:flex;align-items:center;gap:16px"><span class="price">Total: {{ total|floatformat:2 }} lei</span><a class="btn" href="{% url 'shop:checkout' %}">Finalizează comanda</a></div>
+  </div>
+  {% else %}
+  <div class="empty"><b>Coșul este gol.</b><a class="btn mt" href="{% url 'shop:product_list' %}">Vezi produsele</a></div>
+  {% endif %}
+</div>
+{% endblock %}

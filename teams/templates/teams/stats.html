@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}Statistici{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">{{ COMPETITION_NAME }} · {{ SEASON }}</div><h1>Statistici</h1><p>Echipa noastră, jucătorii și întreaga ligă – actualizate după fiecare etapă.</p></div></section>{% endblock %}
+{% block content %}
+
+<h2 class="section-title">{{ team.name }}</h2>
+<div class="tiles">
+  {% if our_row %}<div class="tile dark"><b>{{ our_row.position }}</b><span>Loc în clasament</span><small>{{ our_row.points }} puncte · {{ our_row.ppg }} / meci</small></div>{% endif %}
+  <div class="tile"><b>{{ summary.won }}-{{ summary.drawn }}-{{ summary.lost }}</b><span>V-E-I</span><small>{{ summary.win_pct }}% victorii</small></div>
+  <div class="tile"><b>{{ summary.gf }}</b><span>Goluri marcate</span><small>{{ summary.gf_avg }} / meci</small></div>
+  <div class="tile"><b>{{ summary.ga }}</b><span>Goluri primite</span><small>{{ summary.ga_avg }} / meci</small></div>
+  <div class="tile"><b>{{ summary.clean_sheets }}</b><span>Meciuri fără gol primit</span></div>
+  <div class="tile"><b>{{ summary.unbeaten }}</b><span>Serie fără înfrângere</span></div>
+  {% if summary.streak %}<div class="tile"><b>{{ summary.streak.count }}× {{ summary.streak.result }}</b><span>Seria curentă</span><small>{{ summary.streak.result|result_label }}</small></div>{% endif %}
+  <div class="tile"><b>{{ summary.comebacks }}</b><span>Reveniri</span><small>puncte după ce eram conduși la pauză</small></div>
+</div>
+
+<div class="grid grid-2 mt">
+  <div class="card">
+    <div class="card-title"><h3>Acasă vs. deplasare</h3></div>
+    <table class="data">
+      <thead><tr><th></th><th class="num">M</th><th class="num">V</th><th class="num">E</th><th class="num">I</th><th class="num">Goluri</th><th class="num">Puncte</th></tr></thead>
+      <tbody>
+        {% for label, s in summary_sides %}
+        <tr><td><b>{{ label }}</b></td><td class="num">{{ s.played }}</td><td class="num">{{ s.won }}</td><td class="num">{{ s.drawn }}</td><td class="num">{{ s.lost }}</td><td class="num">{{ s.gf }}:{{ s.ga }}</td><td class="num pts">{{ s.points }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="mt small">
+      {% with m=summary.biggest_win.0 %}{% if m %}<p>🏆 Cea mai mare victorie: <a href="{% url 'match_detail' m.pk %}">{{ m.home.name }} {{ m.home_score }}-{{ m.away_score }} {{ m.away.name }}</a></p>{% endif %}{% endwith %}
+      {% with m=summary.biggest_loss.0 %}{% if m %}<p>📉 Cea mai grea înfrângere: <a href="{% url 'match_detail' m.pk %}">{{ m.home.name }} {{ m.home_score }}-{{ m.away_score }} {{ m.away.name }}</a></p>{% endif %}{% endwith %}
+      <p>⏱️ Conducând la pauză: {{ summary.ht_leading }} meciuri, {{ summary.ht_leading_won }} câștigate.</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><h3>Când marcăm și când primim</h3></div>
+    {% include "teams/_goal_minutes.html" with buckets=goal_minutes %}
+  </div>
+</div>
+
+{% if history_chart %}
+<div class="card mt">
+  <div class="card-title"><h3>Locul în clasament, etapă cu etapă</h3></div>
+  {% include "teams/_history_chart.html" with chart=history_chart %}
+</div>
+{% endif %}
+
+<div class="card mt">
+  <div class="card-title"><h3>Statistici individuale</h3><span class="small muted">Click pe coloane pentru sortare</span></div>
+  {% include "teams/_player_table.html" with table_id="our-players" %}
+</div>
+
+<h2 class="section-title">{{ COMPETITION_NAME }}</h2>
+<div class="tiles">
+  <div class="tile dark"><b>{{ league.played }}<small style="display:inline;font-size:1rem">/{{ league.total }}</small></b><span>Meciuri disputate</span></div>
+  <div class="tile"><b>{{ league.goals }}</b><span>Goluri</span><small>{{ league.goals_per_match }} / meci{% if league.minutes_per_goal %} · un gol la {{ league.minutes_per_goal }}'{% endif %}</small></div>
+  <div class="tile"><b>{{ league.over_2_5_pct }}%</b><span>Meciuri cu peste 2.5 goluri</span></div>
+  <div class="tile"><b>{{ league.btts_pct }}%</b><span>Ambele echipe marchează</span></div>
+  <div class="tile"><b>{{ league.yellows }}</b><span>Cartonașe galbene</span></div>
+  <div class="tile"><b>{{ league.reds }}</b><span>Cartonașe roșii</span></div>
+</div>
+
+<div class="grid grid-2 mt">
+  <div class="card">
+    <div class="card-title"><h3>Rezultate: gazde vs. oaspeți</h3></div>
+    <div class="split" aria-hidden="true">
+      <i style="width:{{ league.home_pct }}%;background:var(--orange)"></i><i style="width:{{ league.draw_pct }}%;background:var(--draw)"></i><i style="width:{{ league.away_pct }}%;background:var(--ink-2)"></i>
+    </div>
+    <div class="legend" style="justify-content:space-between;flex-wrap:wrap">
+      <span><i style="background:var(--orange)"></i>Victorii gazde {{ league.home_wins }} ({{ league.home_pct }}%)</span>
+      <span><i style="background:var(--draw)"></i>Egaluri {{ league.draws }} ({{ league.draw_pct }}%)</span>
+      <span><i style="background:var(--ink-2)"></i>Victorii oaspeți {{ league.away_wins }} ({{ league.away_pct }}%)</span>
+    </div>
+    <div class="small mt">
+      {% with m=league.biggest_win %}{% if m %}<p>📏 Cea mai mare diferență: <a href="{% url 'match_detail' m.pk %}">{{ m.home.name }} {{ m.home_score }}-{{ m.away_score }} {{ m.away.name }}</a></p>{% endif %}{% endwith %}
+      {% with m=league.highest_scoring %}{% if m %}<p>🎯 Cele mai multe goluri: <a href="{% url 'match_detail' m.pk %}">{{ m.home.name }} {{ m.home_score }}-{{ m.away_score }} {{ m.away.name }}</a></p>{% endif %}{% endwith %}
+      {% if rankings %}
+      <p>⚔️ Cel mai bun atac: <a href="{{ rankings.best_attack.team.get_absolute_url }}">{{ rankings.best_attack.team.name }}</a> ({{ rankings.best_attack.gf }} goluri)</p>
+      <p>🛡️ Cea mai bună apărare: <a href="{{ rankings.best_defence.team.get_absolute_url }}">{{ rankings.best_defence.team.name }}</a> ({{ rankings.best_defence.ga }} primite)</p>
+      <p>🤝 Cele mai multe egaluri: <a href="{{ rankings.most_draws.team.get_absolute_url }}">{{ rankings.most_draws.team.name }}</a> ({{ rankings.most_draws.drawn }})</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><h3>Golgeteri</h3></div>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>#</th><th>Jucător</th><th>Echipa</th><th class="num">M</th><th class="num">Goluri</th></tr></thead>
+        <tbody>
+        {% for s in scorers %}
+          <tr class="{% if s.team.is_ours %}ours{% endif %}">
+            <td class="pos">{{ s.rank }}</td>
+            <td><a href="{{ s.player.get_absolute_url }}">{{ s.player.name }}</a></td>
+            <td><a class="team-cell" style="min-width:0" href="{{ s.team.get_absolute_url }}"><img src="{{ s.team.logo_url }}" alt="" loading="lazy"><span class="small">{{ s.team.name }}</span></a></td>
+            <td class="num">{{ s.apps }}</td>
+            <td class="num pts">{{ s.goals }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-2 mt">
+  <div class="card">
+    <div class="card-title"><h3>Fair-play pe echipe</h3><span class="small muted">galben = 1p, roșu = 3p</span></div>
+    <div class="table-wrap">
+      <table class="data sortable">
+        <thead><tr><th class="sortable">Echipa</th><th class="num sortable" data-type="num" title="Galbene">CG</th><th class="num sortable" data-type="num" title="Roșii">CR</th><th class="num sortable" data-type="num">Puncte</th></tr></thead>
+        <tbody>
+        {% for d in discipline %}
+          <tr class="{% if d.team.is_ours %}ours{% endif %}">
+            <td><a class="team-cell" href="{{ d.team.get_absolute_url }}"><img src="{{ d.team.logo_url }}" alt="" loading="lazy">{{ d.team.name }}</a></td>
+            <td class="num">{{ d.yellow }}</td><td class="num">{{ d.red }}</td><td class="num pts">{{ d.points }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title"><h3>Cei mai sancționați jucători</h3></div>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Jucător</th><th>Echipa</th><th class="num" title="Galbene">CG</th><th class="num" title="Roșii">CR</th></tr></thead>
+        <tbody>
+        {% for c in carded %}
+          <tr class="{% if c.team.is_ours %}ours{% endif %}">
+            <td><a href="{{ c.player.get_absolute_url }}">{{ c.player.name }}</a></td>
+            <td><img class="logo-sm" src="{{ c.team.logo_url }}" alt="" title="{{ c.team.name }}" loading="lazy"></td>
+            <td class="num">{{ c.yellow }}</td><td class="num">{{ c.red }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% load football %}
+<div class="card">
+  <div class="card-title"><h3><img class="logo-sm" src="{{ team.logo_url }}" alt="" style="vertical-align:middle"> {{ team.name }}</h3></div>
+  {% if r %}
+  <div class="tiles">
+    <div class="tile"><b>{{ r.position }}</b><span>Loc</span></div>
+    <div class="tile"><b>{{ r.points }}</b><span>Puncte</span></div>
+    <div class="tile"><b>{{ r.gf }}:{{ r.ga }}</b><span>Goluri</span></div>
+  </div>
+  <p class="mt" style="margin-bottom:0">Forma: {% form_pills r.form %}</p>
+  {% else %}<p class="muted">Fără meciuri disputate.</p>{% endif %}
+</div>

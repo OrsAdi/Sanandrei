@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Știri{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">Noutăți</div><h1>Știri</h1><p>Ultimele noutăți de la {{ CLUB_NAME }}.</p></div></section>{% endblock %}
+{% block content %}
+<div class="grid grid-3">
+  {% for item in news %}{% include "core/_news_card.html" %}{% empty %}
+  <div class="card empty" style="grid-column:1/-1"><b>Nicio știre publicată încă.</b>Știrile se adaugă din panoul de administrare.</div>
+  {% endfor %}
+</div>
+{% endblock %}

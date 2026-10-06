@@ -1,0 +1,8 @@
+<span title="{{ e.get_kind_display }}{% if e.detail %}: {{ e.detail }}{% endif %}">{{ e.icon }}</span>
+{% if e.kind == "sub" %}
+  {% if e.player %}<a href="{{ e.player.get_absolute_url }}">{{ e.player.name }}</a>{% endif %}
+  {% if e.player_out %}<div class="sub-out">↳ iese {{ e.player_out.name }}</div>{% endif %}
+{% else %}
+  {% if e.player %}<a href="{{ e.player.get_absolute_url }}"><b>{{ e.player.name }}</b></a>{% endif %}
+  {% if e.kind == "own_goal" %}<span class="small muted">(autogol)</span>{% elif e.kind == "penalty" %}<span class="small muted">(penalty)</span>{% endif %}
+{% endif %}

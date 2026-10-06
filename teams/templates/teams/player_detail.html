@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}{{ player.name }}{% endblock %}
+{% block hero %}
+<section class="page-hero">
+  <div class="container" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+    <div style="width:120px;height:120px;border-radius:16px;overflow:hidden;background:var(--ink-2);display:flex;align-items:center;justify-content:center;flex:none">
+      {% if player.picture %}<img src="{{ player.picture }}" alt="" style="width:100%;height:100%;object-fit:cover">{% else %}<span style="font-family:var(--font-head);font-size:3rem;color:rgba(255,255,255,.3)">{{ player.name|initials }}</span>{% endif %}
+    </div>
+    <div>
+      <div class="eyebrow">{% if player.number %}#{{ player.number }} · {% endif %}{{ player.position|default:"Jucător" }}</div>
+      <h1>{{ player.name }}</h1>
+      <p><a href="{{ player.team.get_absolute_url }}" style="color:#fff"><img class="logo-sm" src="{{ player.team.logo_url }}" alt="" style="vertical-align:middle;background:#fff;border-radius:4px"> {{ player.team.name }}</a>
+      {% if player.birth_date %} · născut {{ player.birth_date|date:"j F Y" }} ({{ player.age }} ani){% endif %}</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block content %}
+<div class="tiles mb">
+  <div class="tile dark"><b>{{ player.apps }}</b><span>Meciuri</span><small>{{ player.starts }} titular · {{ player.subs_in }} rezervă</small></div>
+  <div class="tile"><b>{{ player.minutes }}'</b><span>Minute jucate</span></div>
+  <div class="tile"><b>{{ player.goals }}</b><span>Goluri</span>{% if player.minutes_per_goal %}<small>un gol la {{ player.minutes_per_goal }}'</small>{% endif %}</div>
+  <div class="tile"><b>{{ player.yellows }}</b><span>Galbene</span></div>
+  <div class="tile"><b>{{ player.reds }}</b><span>Roșii</span></div>
+  {% if player.own_goals %}<div class="tile"><b>{{ player.own_goals }}</b><span>Autogoluri</span></div>{% endif %}
+</div>
+
+{% if player.bio %}<div class="card prose mb">{{ player.bio|linebreaks }}</div>{% endif %}
+
+<div class="card">
+  <div class="card-title"><h2>Meci cu meci</h2></div>
+  {% if log %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>Etapa</th><th>Adversar</th><th class="num">Scor</th><th class="num">Rol</th><th class="num">Minute</th><th>Evenimente</th></tr></thead>
+      <tbody>
+      {% for row in log %}
+        <tr>
+          <td class="pos">{{ row.match.round }}</td>
+          <td><a class="team-cell" href="{% url 'match_detail' row.match.pk %}"><img src="{{ row.opponent.logo_url }}" alt="">{% if row.home %}vs{% else %}la{% endif %} {{ row.opponent.name }}</a></td>
+          <td class="num nowrap">{{ row.match.home_score }}-{{ row.match.away_score }} {% if row.result %}<span class="pill pill-{{ row.result }}">{{ row.result }}</span>{% endif %}</td>
+          <td class="num">{% if row.appearance.is_starter %}Titular{% else %}Intrat {{ row.appearance.minute_in }}'{% endif %}</td>
+          <td class="num">{{ row.appearance.minutes_played }}'</td>
+          <td>{% for e in row.events %}<span title="{{ e.get_kind_display }}{% if e.detail %}: {{ e.detail }}{% endif %}">{{ e.icon }} {{ e.minute }}'</span> {% endfor %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<p class="muted">Jucătorul nu a evoluat încă în acest sezon.</p>{% endif %}
+</div>
+{% endblock %}

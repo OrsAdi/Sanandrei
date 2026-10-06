@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load football %}
+{% block title %}Acasă{% endblock %}
+
+{% block hero %}
+<section class="hero">
+  <div class="container">
+    <div>
+      <div class="eyebrow">{{ COMPETITION_NAME }} · {{ SEASON }}</div>
+      <h1>CS <span>Sânandrei</span> Timiș</h1>
+      <p class="hero-lead">Rezultate, clasament, lot și statistici complete pentru echipa noastră și pentru toate cele {{ table|length|default:"16" }} echipe din campionat.</p>
+      {% if our_row %}
+      <div class="hero-stats">
+        <div class="hero-stat"><b>{{ our_row.position }}<small style="font-size:1rem">/{{ table|length }}</small></b><span>Loc</span></div>
+        <div class="hero-stat"><b>{{ our_row.points }}</b><span>Puncte</span></div>
+        <div class="hero-stat"><b>{{ our_row.won }}-{{ our_row.drawn }}-{{ our_row.lost }}</b><span>V-E-I</span></div>
+        <div class="hero-stat"><b>{{ our_row.gf }}:{{ our_row.ga }}</b><span>Golaveraj</span></div>
+      </div>
+      <p class="mt" style="margin-bottom:0">{% form_pills our_row.form True %}</p>
+      {% endif %}
+    </div>
+
+    <div>
+      {% if next_match %}
+      <div class="match-card">
+        <div class="label">Următorul meci · Etapa {{ next_match.round }}</div>
+        <div class="meta">{{ next_match.date|date:"l, j F Y · H:i" }} · {{ next_match.venue }}</div>
+        <div class="versus">
+          <div class="team"><img src="{{ next_match.home.logo_url }}" alt=""><div>{{ next_match.home.name }}</div></div>
+          <div class="vs">VS</div>
+          <div class="team"><img src="{{ next_match.away.logo_url }}" alt=""><div>{{ next_match.away.name }}</div></div>
+        </div>
+        {% if next_match.date %}
+        <div class="countdown" data-kickoff="{{ next_match.date|date:'c' }}">
+          <div><b data-d>–</b><span>zile</span></div>
+          <div><b data-h>–</b><span>ore</span></div>
+          <div><b data-m>–</b><span>min</span></div>
+          <div><b data-s>–</b><span>sec</span></div>
+        </div>
+        {% endif %}
+        {% if next_opponent_row %}
+        <p class="small muted center" style="margin:14px 0 0">
+          Adversar: locul {{ next_opponent_row.position }}, {{ next_opponent_row.points }} puncte · formă {% form_pills next_opponent_row.form %}
+        </p>
+        {% endif %}
+        <p class="center" style="margin:16px 0 0"><a class="btn btn-sm" href="{% url 'match_detail' next_match.pk %}">Detalii meci</a></p>
+      </div>
+      {% elif last_match %}
+      <div class="match-card">
+        <div class="label">Ultimul meci</div>
+        {% include "core/_last_match.html" %}
+      </div>
+      {% else %}
+      <div class="match-card empty"><b>Nu există încă date.</b>Rulați <code>python manage.py sync_frf</code>.</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+{% if team %}
+<div class="grid grid-main mt">
+  <div>
+    {% if last_match %}
+    <div class="card">
+      <div class="card-title"><h2>Ultimul rezultat</h2><a href="{% url 'match_detail' last_match.pk %}">Raport complet →</a></div>
+      {% include "core/_last_match.html" %}
+    </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-title"><h2>Rezultate recente</h2><a href="{% url 'fixtures' %}">Toate meciurile →</a></div>
+      {% for m in recent %}{% include "teams/_fixture.html" with m=m result=m.our_result %}{% empty %}<p class="muted">Niciun meci disputat încă.</p>{% endfor %}
+    </div>
+
+    {% if summary.played %}
+    <div class="card">
+      <div class="card-title"><h2>Sezonul în cifre</h2><a href="{% url 'stats' %}">Statistici complete →</a></div>
+      <div class="tiles">
+        <div class="tile"><b>{{ summary.win_pct }}%</b><span>Victorii</span></div>
+        <div class="tile"><b>{{ summary.gf_avg }}</b><span>Goluri / meci</span></div>
+        <div class="tile"><b>{{ summary.ga_avg }}</b><span>Primite / meci</span></div>
+        <div class="tile"><b>{{ summary.clean_sheets }}</b><span>Fără gol primit</span></div>
+        <div class="tile"><b>{{ summary.unbeaten }}</b><span>Meciuri fără înfrângere</span></div>
+        <div class="tile"><b>{{ summary.home.won }}/{{ summary.home.played }}</b><span>Victorii acasă</span></div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if news %}
+    <h2 class="section-title">Știri <a class="small" href="{% url 'news_list' %}">Toate →</a></h2>
+    <div class="grid grid-3">
+      {% for item in news %}{% include "core/_news_card.html" %}{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <aside>
+    <div class="card">
+      <div class="card-title"><h3>Clasament</h3><a href="{% url 'standings' %}">Complet →</a></div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>#</th><th>Echipa</th><th class="num">M</th><th class="num">GD</th><th class="num">P</th></tr></thead>
+          <tbody>
+          {% for r in table %}
+            <tr class="{% if r.team.is_ours %}ours{% endif %}">
+              <td class="pos">{{ r.position }}</td>
+              <td><a class="team-cell" style="min-width:0" href="{{ r.team.get_absolute_url }}"><img src="{{ r.team.logo_url }}" alt="" loading="lazy">{{ r.team.name }}</a></td>
+              <td class="num">{{ r.played }}</td>
+              <td class="num">{{ r.gd|signed }}</td>
+              <td class="num pts">{{ r.points }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><h3>Marcatorii noștri</h3><a href="{% url 'squad_list' %}">Lotul →</a></div>
+      {% for s in our_scorers %}
+        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)">
+          <a href="{{ s.player.get_absolute_url }}">{{ s.rank }}. {{ s.player.name }}</a>
+          <b class="pts">{{ s.goals }}</b>
+        </div>
+      {% empty %}<p class="muted">Niciun gol înregistrat.</p>{% endfor %}
+    </div>
+  </aside>
+</div>
+
+{% if next_round %}
+<h2 class="section-title">Etapa {{ next_match.round }} în {{ COMPETITION_NAME }} <a class="small" href="{% url 'fixtures' %}?etapa={{ next_match.round }}">Program →</a></h2>
+<div class="card">
+  {% for m in next_round %}{% include "teams/_fixture.html" %}{% endfor %}
+</div>
+{% endif %}
+{% endif %}
+
+{% if sponsors %}
+<h2 class="section-title">Sponsori și parteneri</h2>
+<div class="card sponsors">
+  {% for s in sponsors %}
+    <a href="{{ s.website|default:'#' }}" target="_blank" rel="noopener" title="{{ s.name }}">
+      {% if s.logo %}<img src="{{ s.logo.url }}" alt="{{ s.name }}">{% else %}<b>{{ s.name }}</b>{% endif %}
+    </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

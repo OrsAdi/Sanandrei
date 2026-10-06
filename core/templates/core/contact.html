@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Contact{% endblock %}
+{% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">Scrie-ne</div><h1>Contact</h1><p>Întrebări, parteneriate, înscrieri la grupele de copii – vă răspundem cu drag.</p></div></section>{% endblock %}
+{% block content %}
+<div class="grid grid-main">
+  <div class="card">
+    <h2>Trimite un mesaj</h2>
+    <form method="post" class="form-grid" novalidate>
+      {% csrf_token %}
+      {{ form.website }}
+      <div class="grid grid-2" style="gap:14px">
+        <div>{{ form.name.label_tag }}{{ form.name }}{{ form.name.errors }}</div>
+        <div>{{ form.email.label_tag }}{{ form.email }}{{ form.email.errors }}</div>
+      </div>
+      <div class="grid grid-2" style="gap:14px">
+        <div>{{ form.phone.label_tag }}{{ form.phone }}{{ form.phone.errors }}</div>
+        <div>{{ form.subject.label_tag }}{{ form.subject }}{{ form.subject.errors }}</div>
+      </div>
+      <div>{{ form.message.label_tag }}{{ form.message }}{{ form.message.errors }}</div>
+      <div><button class="btn" type="submit">Trimite mesajul</button></div>
+    </form>
+  </div>
+  <aside>
+    <div class="card">
+      <h3>Date de contact</h3>
+      <p><b>{{ CLUB_NAME }}</b></p>
+      <p>📍 {{ CLUB_VENUE }}</p>
+      <p>✉️ {{ CLUB_EMAIL }}</p>
+      {% if CLUB_PHONE %}<p>📞 {{ CLUB_PHONE }}</p>{% endif %}
+      <p><a href="{{ FRF_TEAM_URL }}" target="_blank" rel="noopener">Pagina clubului pe frf-ajf.ro ↗</a></p>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <iframe title="Hartă Sânandrei" src="https://www.google.com/maps?q=Sanandrei,+Timis&output=embed" width="100%" height="260" style="border:0;display:block" loading="lazy"></iframe>
+    </div>
+  </aside>
+</div>
+{% endblock %}

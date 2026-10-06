@@ -1,0 +1,11 @@
+{% load football %}
+<div class="meta">Etapa {{ last_match.round }} · {{ last_match.date|date:"j F Y" }} · {{ last_match.venue }}</div>
+<div class="versus">
+  <div class="team"><img src="{{ last_match.home.logo_url }}" alt=""><div>{{ last_match.home.name }}</div></div>
+  <div>
+    <div class="score">{{ last_match.home_score }} - {{ last_match.away_score }}</div>
+    {% if last_match.has_halftime %}<div class="small muted">pauză {{ last_match.ht_home }}-{{ last_match.ht_away }}</div>{% endif %}
+  </div>
+  <div class="team"><img src="{{ last_match.away.logo_url }}" alt=""><div>{{ last_match.away.name }}</div></div>
+</div>
+{% if last_result %}<p class="center" style="margin:0"><span class="pill pill-{{ last_result }} pill-lg" style="width:auto;padding:0 12px">{{ last_result|result_label }}</span></p>{% endif %}
