@@ -88,6 +88,21 @@ class PlayersAndLineupTests(ContentTestCase):
         call_command("export_players", stdout=open("/dev/null", "w"))
         self.assertEqual(yaml.safe_load(path.read_text())["numar"], 9)
 
+    def test_export_writes_player_dropdown_for_lineup(self):
+        shutil.copy(Path(__file__).resolve().parent.parent / ".pages.yml", self.tmp / ".pages.yml")
+        call_command("export_players", stdout=open("/dev/null", "w"))
+        path = self.tmp / "content" / "jucatori" / "3.yml"
+        data = yaml.safe_load(path.read_text())
+        path.write_text(yaml.safe_dump(dict(data, numar=10, pozitie="Atacant"), allow_unicode=True))
+        call_command("export_players", stdout=open("/dev/null", "w"))
+        config = yaml.safe_load((self.tmp / ".pages.yml").read_text())
+        fields = {f["name"]: f for c in config["content"] if c["name"] == "primul11" for f in c["fields"]}
+        values = fields["fundasi"]["options"]["values"]
+        self.assertEqual(fields["portar"]["type"], "select")
+        self.assertTrue(fields["fundasi"]["options"]["multiple"])
+        self.assertEqual(values[0], {"name": "3", "label": "10 · Acasa 3 (Atacant)"}, "jucătorii cu număr primii")
+        self.assertEqual(len(values), Player.objects.filter(team__frf_id=205).count())
+
     def test_lineup_shown_for_next_match(self):
         self.write("primul11.yml", yaml.safe_dump({
             "publicat": True, "etapa": 7, "portar": "1",

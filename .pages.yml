@@ -70,65 +70,439 @@ content:
         type: number
         required: true
         description: Numărul etapei pentru care anunțați echipa. După meci, echipa dispare automat de pe site.
+      # >>> LISTA JUCĂTORI – generată automat la fiecare sincronizare (export_players). Nu editați manual.
       - name: portar
-        label: Portar
-        type: reference
+        label: "Portar"
+        type: select
         options:
-          collection: jucatori
-          search: "nume, numar"
-          value: "{fields.frf_id}"
-          label: "{fields.numar} {fields.nume}"
+          placeholder: Alegeți din listă
+          values:
+            - { name: "278932", label: "Avram Filip Sebastian" }
+            - { name: "287549", label: "Avram Sorin Caius" }
+            - { name: "130271", label: "Badauta Alexandru Catalin" }
+            - { name: "296611", label: "Bangau Marius" }
+            - { name: "274886", label: "Birnaure Sebastian David Nicolae" }
+            - { name: "130281", label: "Birza Ioan Dacian" }
+            - { name: "174972", label: "Bodochi Alexandru Romario" }
+            - { name: "230253", label: "Boghian Adrian" }
+            - { name: "157845", label: "Burciu Dragoș Ilie" }
+            - { name: "249024", label: "Calina Casapu Constantin Daniel" }
+            - { name: "106958", label: "Carabet Alin Flavius" }
+            - { name: "289831", label: "Chhantyal Dipak" }
+            - { name: "106910", label: "Culda Alin Florin" }
+            - { name: "106955", label: "Daniloaia Adrian Cristian" }
+            - { name: "278832", label: "Derevenciuc Dragos" }
+            - { name: "289833", label: "Dhikaj Ruchal" }
+            - { name: "106918", label: "Diaconu Emanuel Daniel" }
+            - { name: "97217", label: "Fedor Sergiu Alex" }
+            - { name: "130903", label: "Fridrich Harald Adrian" }
+            - { name: "69501", label: "Ghighilicea Claudiu Dumitru" }
+            - { name: "106959", label: "Ghita Dumitru Ligius" }
+            - { name: "278272", label: "Golorom Alecsandru Marian" }
+            - { name: "277842", label: "Golorom Andrei" }
+            - { name: "130274", label: "Hecsko Mihai Daniel" }
+            - { name: "117135", label: "Hodis Vanea Andrei" }
+            - { name: "138346", label: "Isai Antonio Nicolae" }
+            - { name: "172172", label: "Iuhasz Paul George" }
+            - { name: "175050", label: "Kis Robert" }
+            - { name: "292178", label: "Krnacs Gabriel" }
+            - { name: "289832", label: "Limbu Ankit" }
+            - { name: "96480", label: "Martinov Alexandru Jiva" }
+            - { name: "296852", label: "Merca Stefan" }
+            - { name: "273782", label: "Mihăilescu David" }
+            - { name: "131170", label: "Muresan Cristian" }
+            - { name: "106920", label: "Nasta Lucian" }
+            - { name: "106968", label: "Neag Alexandru" }
+            - { name: "175034", label: "Olaru Lucian" }
+            - { name: "274924", label: "Oprea Mario Răzvan" }
+            - { name: "234810", label: "Pascu Petre Alexandru" }
+            - { name: "106925", label: "Petreus Ioan Vasile" }
+            - { name: "277610", label: "Petreuș Ionel" }
+            - { name: "107102", label: "Popa Dumitru Adrian" }
+            - { name: "264936", label: "Popescu Oprel Ionut" }
+            - { name: "175033", label: "Precup Andrei Alexandru" }
+            - { name: "279792", label: "Precup Darius Florin" }
+            - { name: "278616", label: "Racaru Florin Ionuț" }
+            - { name: "117426", label: "Resteman Cristian" }
+            - { name: "273783", label: "Rus Alexandru Florin" }
+            - { name: "175036", label: "Sabau Adrian Mihai" }
+            - { name: "130916", label: "Sinisa Sporin" }
+            - { name: "268488", label: "Sintean Andrei" }
+            - { name: "287023", label: "Stefaneanu Flavius" }
+            - { name: "173916", label: "Szalkai Robert" }
+            - { name: "106935", label: "Talasman Cristian" }
+            - { name: "106971", label: "Talasman Gabriel" }
+            - { name: "289834", label: "Tamasan Andrei" }
+            - { name: "186627", label: "Tancau Raul Dorian" }
+            - { name: "287022", label: "Todea Raul Petre" }
+            - { name: "135636", label: "Toma Marius Cosmin" }
+            - { name: "186607", label: "Tudosie Mario Alex" }
+            - { name: "106927", label: "Ulici Sebastian Cristian" }
+            - { name: "281570", label: "Varga Denis Alberto" }
+            - { name: "275956", label: "Vereștiuc Cosmin Ilie" }
+            - { name: "279921", label: "Voicu Darius" }
       - name: fundasi
-        label: Fundași
-        type: reference
-        description: De la dreapta la stânga, cum apar pe teren.
+        label: "Fundași"
+        type: select
+        description: "De la dreapta la stânga, cum apar pe teren."
         options:
-          collection: jucatori
-          search: "nume, numar"
-          value: "{fields.frf_id}"
-          label: "{fields.numar} {fields.nume}"
           multiple: true
           max: 6
+          placeholder: Alegeți din listă
+          values:
+            - { name: "278932", label: "Avram Filip Sebastian" }
+            - { name: "287549", label: "Avram Sorin Caius" }
+            - { name: "130271", label: "Badauta Alexandru Catalin" }
+            - { name: "296611", label: "Bangau Marius" }
+            - { name: "274886", label: "Birnaure Sebastian David Nicolae" }
+            - { name: "130281", label: "Birza Ioan Dacian" }
+            - { name: "174972", label: "Bodochi Alexandru Romario" }
+            - { name: "230253", label: "Boghian Adrian" }
+            - { name: "157845", label: "Burciu Dragoș Ilie" }
+            - { name: "249024", label: "Calina Casapu Constantin Daniel" }
+            - { name: "106958", label: "Carabet Alin Flavius" }
+            - { name: "289831", label: "Chhantyal Dipak" }
+            - { name: "106910", label: "Culda Alin Florin" }
+            - { name: "106955", label: "Daniloaia Adrian Cristian" }
+            - { name: "278832", label: "Derevenciuc Dragos" }
+            - { name: "289833", label: "Dhikaj Ruchal" }
+            - { name: "106918", label: "Diaconu Emanuel Daniel" }
+            - { name: "97217", label: "Fedor Sergiu Alex" }
+            - { name: "130903", label: "Fridrich Harald Adrian" }
+            - { name: "69501", label: "Ghighilicea Claudiu Dumitru" }
+            - { name: "106959", label: "Ghita Dumitru Ligius" }
+            - { name: "278272", label: "Golorom Alecsandru Marian" }
+            - { name: "277842", label: "Golorom Andrei" }
+            - { name: "130274", label: "Hecsko Mihai Daniel" }
+            - { name: "117135", label: "Hodis Vanea Andrei" }
+            - { name: "138346", label: "Isai Antonio Nicolae" }
+            - { name: "172172", label: "Iuhasz Paul George" }
+            - { name: "175050", label: "Kis Robert" }
+            - { name: "292178", label: "Krnacs Gabriel" }
+            - { name: "289832", label: "Limbu Ankit" }
+            - { name: "96480", label: "Martinov Alexandru Jiva" }
+            - { name: "296852", label: "Merca Stefan" }
+            - { name: "273782", label: "Mihăilescu David" }
+            - { name: "131170", label: "Muresan Cristian" }
+            - { name: "106920", label: "Nasta Lucian" }
+            - { name: "106968", label: "Neag Alexandru" }
+            - { name: "175034", label: "Olaru Lucian" }
+            - { name: "274924", label: "Oprea Mario Răzvan" }
+            - { name: "234810", label: "Pascu Petre Alexandru" }
+            - { name: "106925", label: "Petreus Ioan Vasile" }
+            - { name: "277610", label: "Petreuș Ionel" }
+            - { name: "107102", label: "Popa Dumitru Adrian" }
+            - { name: "264936", label: "Popescu Oprel Ionut" }
+            - { name: "175033", label: "Precup Andrei Alexandru" }
+            - { name: "279792", label: "Precup Darius Florin" }
+            - { name: "278616", label: "Racaru Florin Ionuț" }
+            - { name: "117426", label: "Resteman Cristian" }
+            - { name: "273783", label: "Rus Alexandru Florin" }
+            - { name: "175036", label: "Sabau Adrian Mihai" }
+            - { name: "130916", label: "Sinisa Sporin" }
+            - { name: "268488", label: "Sintean Andrei" }
+            - { name: "287023", label: "Stefaneanu Flavius" }
+            - { name: "173916", label: "Szalkai Robert" }
+            - { name: "106935", label: "Talasman Cristian" }
+            - { name: "106971", label: "Talasman Gabriel" }
+            - { name: "289834", label: "Tamasan Andrei" }
+            - { name: "186627", label: "Tancau Raul Dorian" }
+            - { name: "287022", label: "Todea Raul Petre" }
+            - { name: "135636", label: "Toma Marius Cosmin" }
+            - { name: "186607", label: "Tudosie Mario Alex" }
+            - { name: "106927", label: "Ulici Sebastian Cristian" }
+            - { name: "281570", label: "Varga Denis Alberto" }
+            - { name: "275956", label: "Vereștiuc Cosmin Ilie" }
+            - { name: "279921", label: "Voicu Darius" }
       - name: mijlocasi
-        label: Mijlocași
-        type: reference
+        label: "Mijlocași"
+        type: select
         options:
-          collection: jucatori
-          search: "nume, numar"
-          value: "{fields.frf_id}"
-          label: "{fields.numar} {fields.nume}"
           multiple: true
           max: 6
+          placeholder: Alegeți din listă
+          values:
+            - { name: "278932", label: "Avram Filip Sebastian" }
+            - { name: "287549", label: "Avram Sorin Caius" }
+            - { name: "130271", label: "Badauta Alexandru Catalin" }
+            - { name: "296611", label: "Bangau Marius" }
+            - { name: "274886", label: "Birnaure Sebastian David Nicolae" }
+            - { name: "130281", label: "Birza Ioan Dacian" }
+            - { name: "174972", label: "Bodochi Alexandru Romario" }
+            - { name: "230253", label: "Boghian Adrian" }
+            - { name: "157845", label: "Burciu Dragoș Ilie" }
+            - { name: "249024", label: "Calina Casapu Constantin Daniel" }
+            - { name: "106958", label: "Carabet Alin Flavius" }
+            - { name: "289831", label: "Chhantyal Dipak" }
+            - { name: "106910", label: "Culda Alin Florin" }
+            - { name: "106955", label: "Daniloaia Adrian Cristian" }
+            - { name: "278832", label: "Derevenciuc Dragos" }
+            - { name: "289833", label: "Dhikaj Ruchal" }
+            - { name: "106918", label: "Diaconu Emanuel Daniel" }
+            - { name: "97217", label: "Fedor Sergiu Alex" }
+            - { name: "130903", label: "Fridrich Harald Adrian" }
+            - { name: "69501", label: "Ghighilicea Claudiu Dumitru" }
+            - { name: "106959", label: "Ghita Dumitru Ligius" }
+            - { name: "278272", label: "Golorom Alecsandru Marian" }
+            - { name: "277842", label: "Golorom Andrei" }
+            - { name: "130274", label: "Hecsko Mihai Daniel" }
+            - { name: "117135", label: "Hodis Vanea Andrei" }
+            - { name: "138346", label: "Isai Antonio Nicolae" }
+            - { name: "172172", label: "Iuhasz Paul George" }
+            - { name: "175050", label: "Kis Robert" }
+            - { name: "292178", label: "Krnacs Gabriel" }
+            - { name: "289832", label: "Limbu Ankit" }
+            - { name: "96480", label: "Martinov Alexandru Jiva" }
+            - { name: "296852", label: "Merca Stefan" }
+            - { name: "273782", label: "Mihăilescu David" }
+            - { name: "131170", label: "Muresan Cristian" }
+            - { name: "106920", label: "Nasta Lucian" }
+            - { name: "106968", label: "Neag Alexandru" }
+            - { name: "175034", label: "Olaru Lucian" }
+            - { name: "274924", label: "Oprea Mario Răzvan" }
+            - { name: "234810", label: "Pascu Petre Alexandru" }
+            - { name: "106925", label: "Petreus Ioan Vasile" }
+            - { name: "277610", label: "Petreuș Ionel" }
+            - { name: "107102", label: "Popa Dumitru Adrian" }
+            - { name: "264936", label: "Popescu Oprel Ionut" }
+            - { name: "175033", label: "Precup Andrei Alexandru" }
+            - { name: "279792", label: "Precup Darius Florin" }
+            - { name: "278616", label: "Racaru Florin Ionuț" }
+            - { name: "117426", label: "Resteman Cristian" }
+            - { name: "273783", label: "Rus Alexandru Florin" }
+            - { name: "175036", label: "Sabau Adrian Mihai" }
+            - { name: "130916", label: "Sinisa Sporin" }
+            - { name: "268488", label: "Sintean Andrei" }
+            - { name: "287023", label: "Stefaneanu Flavius" }
+            - { name: "173916", label: "Szalkai Robert" }
+            - { name: "106935", label: "Talasman Cristian" }
+            - { name: "106971", label: "Talasman Gabriel" }
+            - { name: "289834", label: "Tamasan Andrei" }
+            - { name: "186627", label: "Tancau Raul Dorian" }
+            - { name: "287022", label: "Todea Raul Petre" }
+            - { name: "135636", label: "Toma Marius Cosmin" }
+            - { name: "186607", label: "Tudosie Mario Alex" }
+            - { name: "106927", label: "Ulici Sebastian Cristian" }
+            - { name: "281570", label: "Varga Denis Alberto" }
+            - { name: "275956", label: "Vereștiuc Cosmin Ilie" }
+            - { name: "279921", label: "Voicu Darius" }
       - name: mijlocasi_ofensivi
-        label: Mijlocași ofensivi (opțional, ex. pentru 4-2-3-1)
-        type: reference
+        label: "Mijlocași ofensivi (opțional, ex. pentru 4-2-3-1)"
+        type: select
         options:
-          collection: jucatori
-          search: "nume, numar"
-          value: "{fields.frf_id}"
-          label: "{fields.numar} {fields.nume}"
           multiple: true
           max: 6
+          placeholder: Alegeți din listă
+          values:
+            - { name: "278932", label: "Avram Filip Sebastian" }
+            - { name: "287549", label: "Avram Sorin Caius" }
+            - { name: "130271", label: "Badauta Alexandru Catalin" }
+            - { name: "296611", label: "Bangau Marius" }
+            - { name: "274886", label: "Birnaure Sebastian David Nicolae" }
+            - { name: "130281", label: "Birza Ioan Dacian" }
+            - { name: "174972", label: "Bodochi Alexandru Romario" }
+            - { name: "230253", label: "Boghian Adrian" }
+            - { name: "157845", label: "Burciu Dragoș Ilie" }
+            - { name: "249024", label: "Calina Casapu Constantin Daniel" }
+            - { name: "106958", label: "Carabet Alin Flavius" }
+            - { name: "289831", label: "Chhantyal Dipak" }
+            - { name: "106910", label: "Culda Alin Florin" }
+            - { name: "106955", label: "Daniloaia Adrian Cristian" }
+            - { name: "278832", label: "Derevenciuc Dragos" }
+            - { name: "289833", label: "Dhikaj Ruchal" }
+            - { name: "106918", label: "Diaconu Emanuel Daniel" }
+            - { name: "97217", label: "Fedor Sergiu Alex" }
+            - { name: "130903", label: "Fridrich Harald Adrian" }
+            - { name: "69501", label: "Ghighilicea Claudiu Dumitru" }
+            - { name: "106959", label: "Ghita Dumitru Ligius" }
+            - { name: "278272", label: "Golorom Alecsandru Marian" }
+            - { name: "277842", label: "Golorom Andrei" }
+            - { name: "130274", label: "Hecsko Mihai Daniel" }
+            - { name: "117135", label: "Hodis Vanea Andrei" }
+            - { name: "138346", label: "Isai Antonio Nicolae" }
+            - { name: "172172", label: "Iuhasz Paul George" }
+            - { name: "175050", label: "Kis Robert" }
+            - { name: "292178", label: "Krnacs Gabriel" }
+            - { name: "289832", label: "Limbu Ankit" }
+            - { name: "96480", label: "Martinov Alexandru Jiva" }
+            - { name: "296852", label: "Merca Stefan" }
+            - { name: "273782", label: "Mihăilescu David" }
+            - { name: "131170", label: "Muresan Cristian" }
+            - { name: "106920", label: "Nasta Lucian" }
+            - { name: "106968", label: "Neag Alexandru" }
+            - { name: "175034", label: "Olaru Lucian" }
+            - { name: "274924", label: "Oprea Mario Răzvan" }
+            - { name: "234810", label: "Pascu Petre Alexandru" }
+            - { name: "106925", label: "Petreus Ioan Vasile" }
+            - { name: "277610", label: "Petreuș Ionel" }
+            - { name: "107102", label: "Popa Dumitru Adrian" }
+            - { name: "264936", label: "Popescu Oprel Ionut" }
+            - { name: "175033", label: "Precup Andrei Alexandru" }
+            - { name: "279792", label: "Precup Darius Florin" }
+            - { name: "278616", label: "Racaru Florin Ionuț" }
+            - { name: "117426", label: "Resteman Cristian" }
+            - { name: "273783", label: "Rus Alexandru Florin" }
+            - { name: "175036", label: "Sabau Adrian Mihai" }
+            - { name: "130916", label: "Sinisa Sporin" }
+            - { name: "268488", label: "Sintean Andrei" }
+            - { name: "287023", label: "Stefaneanu Flavius" }
+            - { name: "173916", label: "Szalkai Robert" }
+            - { name: "106935", label: "Talasman Cristian" }
+            - { name: "106971", label: "Talasman Gabriel" }
+            - { name: "289834", label: "Tamasan Andrei" }
+            - { name: "186627", label: "Tancau Raul Dorian" }
+            - { name: "287022", label: "Todea Raul Petre" }
+            - { name: "135636", label: "Toma Marius Cosmin" }
+            - { name: "186607", label: "Tudosie Mario Alex" }
+            - { name: "106927", label: "Ulici Sebastian Cristian" }
+            - { name: "281570", label: "Varga Denis Alberto" }
+            - { name: "275956", label: "Vereștiuc Cosmin Ilie" }
+            - { name: "279921", label: "Voicu Darius" }
       - name: atacanti
-        label: Atacanți
-        type: reference
+        label: "Atacanți"
+        type: select
         options:
-          collection: jucatori
-          search: "nume, numar"
-          value: "{fields.frf_id}"
-          label: "{fields.numar} {fields.nume}"
           multiple: true
           max: 6
+          placeholder: Alegeți din listă
+          values:
+            - { name: "278932", label: "Avram Filip Sebastian" }
+            - { name: "287549", label: "Avram Sorin Caius" }
+            - { name: "130271", label: "Badauta Alexandru Catalin" }
+            - { name: "296611", label: "Bangau Marius" }
+            - { name: "274886", label: "Birnaure Sebastian David Nicolae" }
+            - { name: "130281", label: "Birza Ioan Dacian" }
+            - { name: "174972", label: "Bodochi Alexandru Romario" }
+            - { name: "230253", label: "Boghian Adrian" }
+            - { name: "157845", label: "Burciu Dragoș Ilie" }
+            - { name: "249024", label: "Calina Casapu Constantin Daniel" }
+            - { name: "106958", label: "Carabet Alin Flavius" }
+            - { name: "289831", label: "Chhantyal Dipak" }
+            - { name: "106910", label: "Culda Alin Florin" }
+            - { name: "106955", label: "Daniloaia Adrian Cristian" }
+            - { name: "278832", label: "Derevenciuc Dragos" }
+            - { name: "289833", label: "Dhikaj Ruchal" }
+            - { name: "106918", label: "Diaconu Emanuel Daniel" }
+            - { name: "97217", label: "Fedor Sergiu Alex" }
+            - { name: "130903", label: "Fridrich Harald Adrian" }
+            - { name: "69501", label: "Ghighilicea Claudiu Dumitru" }
+            - { name: "106959", label: "Ghita Dumitru Ligius" }
+            - { name: "278272", label: "Golorom Alecsandru Marian" }
+            - { name: "277842", label: "Golorom Andrei" }
+            - { name: "130274", label: "Hecsko Mihai Daniel" }
+            - { name: "117135", label: "Hodis Vanea Andrei" }
+            - { name: "138346", label: "Isai Antonio Nicolae" }
+            - { name: "172172", label: "Iuhasz Paul George" }
+            - { name: "175050", label: "Kis Robert" }
+            - { name: "292178", label: "Krnacs Gabriel" }
+            - { name: "289832", label: "Limbu Ankit" }
+            - { name: "96480", label: "Martinov Alexandru Jiva" }
+            - { name: "296852", label: "Merca Stefan" }
+            - { name: "273782", label: "Mihăilescu David" }
+            - { name: "131170", label: "Muresan Cristian" }
+            - { name: "106920", label: "Nasta Lucian" }
+            - { name: "106968", label: "Neag Alexandru" }
+            - { name: "175034", label: "Olaru Lucian" }
+            - { name: "274924", label: "Oprea Mario Răzvan" }
+            - { name: "234810", label: "Pascu Petre Alexandru" }
+            - { name: "106925", label: "Petreus Ioan Vasile" }
+            - { name: "277610", label: "Petreuș Ionel" }
+            - { name: "107102", label: "Popa Dumitru Adrian" }
+            - { name: "264936", label: "Popescu Oprel Ionut" }
+            - { name: "175033", label: "Precup Andrei Alexandru" }
+            - { name: "279792", label: "Precup Darius Florin" }
+            - { name: "278616", label: "Racaru Florin Ionuț" }
+            - { name: "117426", label: "Resteman Cristian" }
+            - { name: "273783", label: "Rus Alexandru Florin" }
+            - { name: "175036", label: "Sabau Adrian Mihai" }
+            - { name: "130916", label: "Sinisa Sporin" }
+            - { name: "268488", label: "Sintean Andrei" }
+            - { name: "287023", label: "Stefaneanu Flavius" }
+            - { name: "173916", label: "Szalkai Robert" }
+            - { name: "106935", label: "Talasman Cristian" }
+            - { name: "106971", label: "Talasman Gabriel" }
+            - { name: "289834", label: "Tamasan Andrei" }
+            - { name: "186627", label: "Tancau Raul Dorian" }
+            - { name: "287022", label: "Todea Raul Petre" }
+            - { name: "135636", label: "Toma Marius Cosmin" }
+            - { name: "186607", label: "Tudosie Mario Alex" }
+            - { name: "106927", label: "Ulici Sebastian Cristian" }
+            - { name: "281570", label: "Varga Denis Alberto" }
+            - { name: "275956", label: "Vereștiuc Cosmin Ilie" }
+            - { name: "279921", label: "Voicu Darius" }
       - name: rezerve
-        label: Rezerve
-        type: reference
+        label: "Rezerve"
+        type: select
         options:
-          collection: jucatori
-          search: "nume, numar"
-          value: "{fields.frf_id}"
-          label: "{fields.numar} {fields.nume}"
           multiple: true
           max: 12
+          placeholder: Alegeți din listă
+          values:
+            - { name: "278932", label: "Avram Filip Sebastian" }
+            - { name: "287549", label: "Avram Sorin Caius" }
+            - { name: "130271", label: "Badauta Alexandru Catalin" }
+            - { name: "296611", label: "Bangau Marius" }
+            - { name: "274886", label: "Birnaure Sebastian David Nicolae" }
+            - { name: "130281", label: "Birza Ioan Dacian" }
+            - { name: "174972", label: "Bodochi Alexandru Romario" }
+            - { name: "230253", label: "Boghian Adrian" }
+            - { name: "157845", label: "Burciu Dragoș Ilie" }
+            - { name: "249024", label: "Calina Casapu Constantin Daniel" }
+            - { name: "106958", label: "Carabet Alin Flavius" }
+            - { name: "289831", label: "Chhantyal Dipak" }
+            - { name: "106910", label: "Culda Alin Florin" }
+            - { name: "106955", label: "Daniloaia Adrian Cristian" }
+            - { name: "278832", label: "Derevenciuc Dragos" }
+            - { name: "289833", label: "Dhikaj Ruchal" }
+            - { name: "106918", label: "Diaconu Emanuel Daniel" }
+            - { name: "97217", label: "Fedor Sergiu Alex" }
+            - { name: "130903", label: "Fridrich Harald Adrian" }
+            - { name: "69501", label: "Ghighilicea Claudiu Dumitru" }
+            - { name: "106959", label: "Ghita Dumitru Ligius" }
+            - { name: "278272", label: "Golorom Alecsandru Marian" }
+            - { name: "277842", label: "Golorom Andrei" }
+            - { name: "130274", label: "Hecsko Mihai Daniel" }
+            - { name: "117135", label: "Hodis Vanea Andrei" }
+            - { name: "138346", label: "Isai Antonio Nicolae" }
+            - { name: "172172", label: "Iuhasz Paul George" }
+            - { name: "175050", label: "Kis Robert" }
+            - { name: "292178", label: "Krnacs Gabriel" }
+            - { name: "289832", label: "Limbu Ankit" }
+            - { name: "96480", label: "Martinov Alexandru Jiva" }
+            - { name: "296852", label: "Merca Stefan" }
+            - { name: "273782", label: "Mihăilescu David" }
+            - { name: "131170", label: "Muresan Cristian" }
+            - { name: "106920", label: "Nasta Lucian" }
+            - { name: "106968", label: "Neag Alexandru" }
+            - { name: "175034", label: "Olaru Lucian" }
+            - { name: "274924", label: "Oprea Mario Răzvan" }
+            - { name: "234810", label: "Pascu Petre Alexandru" }
+            - { name: "106925", label: "Petreus Ioan Vasile" }
+            - { name: "277610", label: "Petreuș Ionel" }
+            - { name: "107102", label: "Popa Dumitru Adrian" }
+            - { name: "264936", label: "Popescu Oprel Ionut" }
+            - { name: "175033", label: "Precup Andrei Alexandru" }
+            - { name: "279792", label: "Precup Darius Florin" }
+            - { name: "278616", label: "Racaru Florin Ionuț" }
+            - { name: "117426", label: "Resteman Cristian" }
+            - { name: "273783", label: "Rus Alexandru Florin" }
+            - { name: "175036", label: "Sabau Adrian Mihai" }
+            - { name: "130916", label: "Sinisa Sporin" }
+            - { name: "268488", label: "Sintean Andrei" }
+            - { name: "287023", label: "Stefaneanu Flavius" }
+            - { name: "173916", label: "Szalkai Robert" }
+            - { name: "106935", label: "Talasman Cristian" }
+            - { name: "106971", label: "Talasman Gabriel" }
+            - { name: "289834", label: "Tamasan Andrei" }
+            - { name: "186627", label: "Tancau Raul Dorian" }
+            - { name: "287022", label: "Todea Raul Petre" }
+            - { name: "135636", label: "Toma Marius Cosmin" }
+            - { name: "186607", label: "Tudosie Mario Alex" }
+            - { name: "106927", label: "Ulici Sebastian Cristian" }
+            - { name: "281570", label: "Varga Denis Alberto" }
+            - { name: "275956", label: "Vereștiuc Cosmin Ilie" }
+            - { name: "279921", label: "Voicu Darius" }
+      # <<< LISTA JUCĂTORI
       - name: antrenor
         label: Antrenor
         type: string

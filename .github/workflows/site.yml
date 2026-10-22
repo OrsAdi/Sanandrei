@@ -81,20 +81,24 @@ jobs:
       # Baza de date intră în repo doar când s-a schimbat ceva (rezultat nou, lot nou…),
       # nu la fiecare verificare, ca repo-ul să nu crească inutil.
       - name: Salvare date în repo
-        if: steps.db.outputs.sync == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -f /tmp/after ] && ! cmp -s /tmp/before /tmp/after; then
+          if [ "${{ steps.db.outputs.sync }}" = "true" ] && [ -f /tmp/after ] && ! cmp -s /tmp/before /tmp/after; then
             uv run python manage.py shell -c "from teams.models import SyncRun; from django.db import connection; keep=list(SyncRun.objects.values_list('pk', flat=True)[:20]); SyncRun.objects.exclude(pk__in=keep).delete(); connection.cursor().execute('VACUUM')"
             git add data/frf.sqlite3
           fi
-          git add content/jucatori
+          # fișierele jucătorilor noi și lista lor din Primul 11 (Pages CMS)
+          git add content/jucatori .pages.yml
           if git diff --cached --quiet; then echo "Nimic nou de salvat."; exit 0; fi
           git commit -m "Date actualizate de pe frf-ajf.ro"
           git stash --include-untracked --quiet || true
-          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
-          exit 1
+          for i in 1 2 3; do
+            if git pull --rebase; then git push && exit 0; else git rebase --abort; fi
+            sleep 5
+          done
+          # Altă rulare a salvat între timp; datele se reiau la următoarea sincronizare.
+          echo "::warning::Datele nu au putut fi salvate (conflict cu altă rulare). Site-ul se publică oricum."
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
