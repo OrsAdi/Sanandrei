@@ -9,13 +9,14 @@
     {% if product.category %}<div class="eyebrow">{{ product.category.name }}</div>{% endif %}
     <h1 style="font-size:2.2rem">{{ product.name }}</h1>
     <p class="price" style="font-size:2rem">{{ product.price|floatformat:2 }} lei</p>
-    {% if product.description %}<div class="prose">{{ product.description|linebreaks }}</div>{% endif %}
+    {% if product.description %}<div class="prose">{{ product.description_html }}</div>{% endif %}
     {% if product.in_stock %}
-      <form method="post" class="form-grid mt" style="max-width:320px">
-        {% csrf_token %}
-        {% if form.size.field.choices %}<div>{{ form.size.label_tag }}{{ form.size }}{{ form.size.errors }}</div>{% endif %}
-        <div><label for="id_quantity">Cantitate</label>{{ form.quantity }}{{ form.quantity.errors }}</div>
+      <form class="form-grid mt" style="max-width:320px" data-add-to-cart="{{ product.slug }}">
+        {% if product.size_list %}<div><label for="p-size">Mărime</label>
+          <select class="input" id="p-size" name="size" required>{% for s in product.size_list %}<option value="{{ s }}">{{ s }}</option>{% endfor %}</select></div>{% endif %}
+        <div><label for="p-qty">Cantitate</label><input class="input" id="p-qty" type="number" name="quantity" value="1" min="1" max="20" required></div>
         <div><button class="btn" type="submit">Adaugă în coș</button></div>
+        <p class="form-status ok" role="status" hidden>Adăugat în coș. <a href="{% url 'shop:cart' %}"><b>Vezi coșul →</b></a></p>
       </form>
     {% else %}
       <p class="muted mt"><b>Stoc epuizat.</b> Reveniți în curând.</p>

@@ -360,3 +360,42 @@ table.data th.sorted-desc::after { content: " ↓"; opacity: 1; color: var(--ora
 .empty b { display: block; font-size: 1.1rem; color: var(--ink); margin-bottom: 6px; }
 
 svg.chart text { font-family: var(--font-body); font-size: 11px; fill: var(--muted); }
+
+/* --- Primul 11 (echipa de start) ------------------------------------------ */
+.lineup-card .formation { font-family: var(--font-head); font-weight: 800; font-size: 1.3rem; color: var(--orange); }
+.pitch {
+  position: relative; display: flex; flex-direction: column; justify-content: space-around; gap: 10px;
+  min-height: 460px; padding: 22px 8px; border-radius: 12px; overflow: hidden;
+  background: repeating-linear-gradient(180deg, #2f8f46 0 46px, #2a8240 46px 92px);
+}
+.pitch-lines { position: absolute; inset: 10px; border: 2px solid rgba(255,255,255,.55); border-radius: 4px; pointer-events: none; }
+.pitch-lines .half { position: absolute; left: 0; right: 0; top: 50%; border-top: 2px solid rgba(255,255,255,.55); }
+.pitch-lines .circle { position: absolute; left: 50%; top: 50%; width: 90px; height: 90px; margin: -45px 0 0 -45px; border: 2px solid rgba(255,255,255,.55); border-radius: 50%; }
+.pitch-lines .box { position: absolute; left: 25%; right: 25%; height: 60px; border: 2px solid rgba(255,255,255,.55); }
+.pitch-lines .box-top { top: -2px; border-top: 0; }
+.pitch-lines .box-bottom { bottom: -2px; border-bottom: 0; }
+.pitch-row { position: relative; display: flex; justify-content: space-evenly; align-items: flex-start; }
+.pitch-player { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 84px; color: #fff; text-align: center; }
+.pitch-player:hover { color: #fff; transform: translateY(-2px); }
+.pitch-player .shirt {
+  display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%;
+  background: var(--orange); border: 2px solid #fff; font-family: var(--font-head); font-weight: 800; font-size: 1.2rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,.3);
+}
+.pitch-player.gk .shirt { background: var(--ink); }
+.pitch-player .pname {
+  font-size: .75rem; font-weight: 700; line-height: 1.15; padding: 2px 6px; border-radius: 6px;
+  background: rgba(0,0,0,.45); max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+}
+@media (max-width: 520px) {
+  .pitch { min-height: 400px; }
+  .pitch-player { width: 64px; }
+  .pitch-player .shirt { width: 34px; height: 34px; font-size: 1rem; }
+  .pitch-player .pname { font-size: .65rem; }
+}
+
+/* --- formulare trimise din browser ---------------------------------------- */
+.form-status { margin: 0; padding: 12px 14px; border-radius: 10px; font-weight: 600; }
+.form-status.ok { background: #e8f7ee; color: #146c35; }
+.form-status.err { background: #fdecec; color: #a11d1d; }
+.hp { position: absolute !important; left: -9999px !important; }

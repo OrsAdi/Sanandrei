@@ -22,6 +22,12 @@ class News(models.Model):
     def get_absolute_url(self):
         return reverse("news_detail", args=[self.slug])
 
+    @property
+    def body_html(self):
+        from .content import render_markdown
+
+        return render_markdown(self.body)
+
 
 class ContactMessage(models.Model):
     name = models.CharField("Nume", max_length=100)

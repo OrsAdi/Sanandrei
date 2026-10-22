@@ -5,7 +5,7 @@
 {% if categories %}
 <div class="tabs">
   <a href="{% url 'shop:product_list' %}" class="{% if not category %}active{% endif %}">Toate</a>
-  {% for c in categories %}<a href="?categorie={{ c.slug }}" class="{% if category == c %}active{% endif %}">{{ c.name }}</a>{% endfor %}
+  {% for c in categories %}<a href="{% url 'shop:category' c.slug %}" class="{% if category == c %}active{% endif %}">{{ c.name }}</a>{% endfor %}
 </div>
 {% endif %}
 <div class="product-grid">
@@ -22,7 +22,7 @@
     </div>
   </a>
   {% empty %}
-  <div class="card empty" style="grid-column:1/-1"><b>Magazinul se deschide în curând.</b>Produsele se adaugă din panoul de administrare.</div>
+  <div class="card empty" style="grid-column:1/-1"><b>Magazinul se deschide în curând.</b>Produsele apar aici imediat ce sunt adăugate.</div>
   {% endfor %}
 </div>
 {% endblock %}

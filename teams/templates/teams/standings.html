@@ -4,13 +4,12 @@
 {% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">{{ COMPETITION_NAME }} · {{ SEASON }}</div><h1>Clasament</h1><p>{% if upto %}După etapa {{ upto }}{% if upto != last_round %} (ultima disputată: {{ last_round }}){% endif %}{% else %}Nicio etapă disputată{% endif %}</p></div></section>{% endblock %}
 {% block content %}
 <div class="tabs">
-  <a href="?tip=all&etapa={{ upto }}" class="{% if venue == 'all' %}active{% endif %}">General</a>
-  <a href="?tip=home&etapa={{ upto }}" class="{% if venue == 'home' %}active{% endif %}">Acasă</a>
-  <a href="?tip=away&etapa={{ upto }}" class="{% if venue == 'away' %}active{% endif %}">Deplasare</a>
+  {% for key, label in venues %}<a href="{% if upto %}{% url 'standings_view' key upto %}{% else %}{% url 'standings' %}{% endif %}" class="{% if tip == key %}active{% endif %}">{{ label }}</a>
+  {% endfor %}
 </div>
 {% if rounds %}
 <div class="round-picker"><span class="muted small" style="align-self:center;margin-right:4px">După etapa:</span>
-  {% for r in rounds %}<a href="?tip={{ venue }}&etapa={{ r }}" class="{% if r == upto %}active{% endif %}">{{ r }}</a>{% endfor %}
+  {% for r in rounds %}<a href="{% url 'standings_view' tip r %}" class="{% if r == upto %}active{% endif %}">{{ r }}</a>{% endfor %}
 </div>
 {% endif %}
 

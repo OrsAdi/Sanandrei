@@ -30,13 +30,13 @@
       <nav class="nav" id="nav">
         <a href="{% url 'home' %}" class="{% if url == 'home' %}active{% endif %}">Acasă</a>
         <a href="{% url 'squad_list' %}" class="{% if url == 'squad_list' or url == 'player_detail' %}active{% endif %}">Lot</a>
-        <a href="{% url 'fixtures' %}" class="{% if url == 'fixtures' or url == 'match_detail' %}active{% endif %}">Meciuri</a>
-        <a href="{% url 'standings' %}" class="{% if url == 'standings' %}active{% endif %}">Clasament</a>
+        <a href="{% url 'fixtures' %}" class="{% if url == 'fixtures' or url == 'fixtures_round' or url == 'match_detail' %}active{% endif %}">Meciuri</a>
+        <a href="{% url 'standings' %}" class="{% if url == 'standings' or url == 'standings_view' %}active{% endif %}">Clasament</a>
         <a href="{% url 'stats' %}" class="{% if url == 'stats' %}active{% endif %}">Statistici</a>
         <a href="{% url 'team_list' %}" class="{% if url == 'team_list' or url == 'team_detail' %}active{% endif %}">Echipe</a>
         <a href="{% url 'news_list' %}" class="{% if url == 'news_list' or url == 'news_detail' %}active{% endif %}">Știri</a>
         <a href="{% url 'contact' %}" class="{% if url == 'contact' %}active{% endif %}">Contact</a>
-        <a href="{% url 'shop:product_list' %}" class="cart-link">Magazin{% if cart_count %}<span class="badge-count">{{ cart_count }}</span>{% endif %}</a>
+        <a href="{% url 'shop:product_list' %}" class="cart-link">Magazin<span class="badge-count" data-cart-count hidden></span></a>
       </nav>
     </div>
   </header>
@@ -57,8 +57,9 @@
       <div class="footer-grid">
         <div>
           <h4>{{ CLUB_NAME }}</h4>
-          <p>Clubul de fotbal al comunei Sânandrei, județul Timiș. Evoluăm în {{ COMPETITION_NAME }}.</p>
-          <p>📍 {{ CLUB_VENUE }}<br>✉️ {{ CLUB_EMAIL }}{% if CLUB_PHONE %}<br>📞 {{ CLUB_PHONE }}{% endif %}</p>
+          <p>{{ CLUB_ABOUT|default:"Clubul de fotbal al comunei Sânandrei, județul Timiș." }} Evoluăm în {{ COMPETITION_NAME }}.</p>
+          <p>📍 {{ CLUB_VENUE }}<br>✉️ <a href="mailto:{{ CLUB_EMAIL }}">{{ CLUB_EMAIL }}</a>{% if CLUB_PHONE %}<br>📞 <a href="tel:{{ CLUB_PHONE|cut:' ' }}">{{ CLUB_PHONE }}</a>{% endif %}</p>
+          {% if CLUB_FACEBOOK or CLUB_INSTAGRAM %}<p>{% if CLUB_FACEBOOK %}<a href="{{ CLUB_FACEBOOK }}" target="_blank" rel="noopener">Facebook ↗</a>{% endif %}{% if CLUB_FACEBOOK and CLUB_INSTAGRAM %} · {% endif %}{% if CLUB_INSTAGRAM %}<a href="{{ CLUB_INSTAGRAM }}" target="_blank" rel="noopener">Instagram ↗</a>{% endif %}</p>{% endif %}
         </div>
         <div>
           <h4>Echipa</h4>
@@ -85,6 +86,8 @@
       </div>
     </div>
   </footer>
+  <script>window.SITE = {web3formsKey: "{{ WEB3FORMS_KEY|escapejs }}", clubEmail: "{{ CLUB_EMAIL|escapejs }}", clubName: "{{ CLUB_NAME|escapejs }}"};</script>
+  {% block scripts %}{% endblock %}
   <script src="{% static 'js/site.js' %}" defer></script>
 </body>
 </html>

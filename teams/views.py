@@ -1,8 +1,9 @@
 from collections import defaultdict
 
-from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
+
+from core import content
 
 from . import stats
 from .models import Appearance, Match, MatchEvent, Player, Team
@@ -69,7 +70,7 @@ def player_detail(request, pk):
     return render(request, "teams/player_detail.html", {"player": player_s, "log": log})
 
 
-def fixtures(request):
+def fixtures(request, etapa=None):
     """Programul și rezultatele echipei noastre + navigare pe etape pentru toată liga."""
     team = _our_team_or_404()
     matches = list(stats.team_matches(team))
@@ -80,12 +81,9 @@ def fixtures(request):
         m.is_home = m.home_id == team.pk
 
     total_rounds = Match.objects.order_by("-round").values_list("round", flat=True).first() or 0
-    try:
-        selected_round = int(request.GET.get("etapa", 0))
-    except ValueError:
-        selected_round = 0
-    if not 1 <= selected_round <= total_rounds:
-        selected_round = stats.last_played_round() or 1
+    if etapa is not None and not 1 <= etapa <= total_rounds:
+        raise Http404("Etapă inexistentă")
+    selected_round = etapa or stats.last_played_round() or 1
     round_matches = Match.objects.filter(round=selected_round).select_related("home", "away")
 
     return render(request, "teams/fixtures.html", {
@@ -127,25 +125,30 @@ def match_detail(request, pk):
         "home_start": home_start, "home_bench": home_bench,
         "away_start": away_start, "away_bench": away_bench,
         "h2h": h2h,
+        "lineup": (content.lineup_for_round(match.round)
+                   if not match.is_finished and any(t.is_ours for t in (match.home, match.away)) else None),
         "home_row": positions.get(match.home_id),
         "away_row": positions.get(match.away_id),
     })
 
 
-def standings(request):
-    venue = request.GET.get("tip", "all")
-    if venue not in ("all", "home", "away"):
-        venue = "all"
+VENUES = {"general": "all", "acasa": "home", "deplasare": "away"}
+
+
+def standings(request, tip="general", etapa=None):
+    if tip not in VENUES:
+        raise Http404("Tip de clasament inexistent")
+    venue = VENUES[tip]
     last = stats.last_played_round()
-    try:
-        upto = int(request.GET.get("etapa", last))
-    except ValueError:
-        upto = last
-    upto = max(1, min(upto, last)) if last else 0
+    if etapa is not None and not 1 <= etapa <= last:
+        raise Http404("Etapă nedisputată")
+    upto = etapa or last
     table = stats.standings(venue=venue, upto_round=upto or None)
     return render(request, "teams/standings.html", {
         "table": table,
         "venue": venue,
+        "tip": tip,
+        "venues": [(k, label) for k, label in (("general", "General"), ("acasa", "Acasă"), ("deplasare", "Deplasare"))],
         "upto": upto,
         "rounds": range(1, last + 1),
         "last_round": last,
@@ -240,9 +243,10 @@ def _history_chart(history, team_count, width=640, height=220, pad=28):
 
 
 def search(request):
-    q = request.GET.get("q", "").strip()
-    players = teams = []
-    if len(q) >= 2:
-        players = Player.objects.filter(Q(name__icontains=q)).select_related("team")[:30]
-        teams = Team.objects.filter(name__icontains=q)[:10]
-    return render(request, "teams/search.html", {"q": q, "players": players, "teams": teams})
+    """Căutarea se face în browser, pe lista completă de jucători și echipe din pagină."""
+    index = {
+        "players": [{"n": p.name, "t": p.team.name, "u": p.get_absolute_url()}
+                    for p in Player.objects.select_related("team").order_by("name")],
+        "teams": [{"n": t.name, "u": t.get_absolute_url(), "l": t.logo_url} for t in Team.objects.all()],
+    }
+    return render(request, "teams/search.html", {"index": index})

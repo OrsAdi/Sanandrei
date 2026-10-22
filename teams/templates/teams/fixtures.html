@@ -16,7 +16,7 @@
 
 <h2 class="section-title" id="etape">Toate meciurile pe etape</h2>
 <div class="round-picker">
-  {% for r in rounds %}<a href="?etapa={{ r }}#etape" class="{% if r == selected_round %}active{% endif %}">{{ r }}</a>{% endfor %}
+  {% for r in rounds %}<a href="{% url 'fixtures_round' r %}#etape" class="{% if r == selected_round %}active{% endif %}">{{ r }}</a>{% endfor %}
 </div>
 <div class="card">
   <div class="card-title"><h3>Etapa {{ selected_round }}</h3></div>

@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from core.views import contact, home, news_detail, news_list
+from core.views import contact, home, news_detail, news_list, not_found
 from teams import views as teams_views
 
 admin.site.site_header = "CS Sânandrei Timiș – Administrare"
@@ -18,13 +18,16 @@ urlpatterns = [
     path("lot/", teams_views.squad_list, name="squad_list"),
     path("jucator/<int:pk>/", teams_views.player_detail, name="player_detail"),
     path("meciuri/", teams_views.fixtures, name="fixtures"),
+    path("meciuri/etapa/<int:etapa>/", teams_views.fixtures, name="fixtures_round"),
     path("meci/<int:pk>/", teams_views.match_detail, name="match_detail"),
     path("clasament/", teams_views.standings, name="standings"),
+    path("clasament/<str:tip>/etapa/<int:etapa>/", teams_views.standings, name="standings_view"),
     path("statistici/", teams_views.stats_list, name="stats"),
     path("echipe/", teams_views.team_list, name="team_list"),
     path("echipe/<slug:slug>/", teams_views.team_detail, name="team_detail"),
     path("cauta/", teams_views.search, name="search"),
     path("magazin/", include("shop.urls")),
+    path("404.html", not_found, name="not_found"),
 ]
 
 if settings.DEBUG:

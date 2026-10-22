@@ -186,14 +186,25 @@ class ViewTests(TestCase):
         team = Team.objects.get(frf_id=259)
         urls = [
             reverse("home"), reverse("squad_list"), reverse("fixtures"), reverse("standings"),
-            reverse("standings") + "?tip=away", reverse("stats"), reverse("team_list"),
+            reverse("standings_view", args=["deplasare", 7]), reverse("fixtures_round", args=[7]),
+            reverse("stats"), reverse("team_list"),
             team.get_absolute_url(), self.match.get_absolute_url(),
             Match.objects.get(frf_id=1227200).get_absolute_url(),
-            player.get_absolute_url(), reverse("search") + "?q=Acasa",
+            player.get_absolute_url(), reverse("search"),
         ]
         for url in urls:
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 200)
+
+    def test_invalid_round_or_venue_is_404(self):
+        self.assertEqual(self.client.get(reverse("standings_view", args=["general", 99])).status_code, 404)
+        self.assertEqual(self.client.get(reverse("standings_view", args=["altceva", 7])).status_code, 404)
+        self.assertEqual(self.client.get(reverse("fixtures_round", args=[99])).status_code, 404)
+
+    def test_search_page_contains_index(self):
+        response = self.client.get(reverse("search"))
+        self.assertContains(response, 'id="search-index"')
+        self.assertContains(response, "Acasa 3")
 
     def test_squad_groups_by_position(self):
         Player.objects.filter(frf_id=1).update(position="Portar", number=1)

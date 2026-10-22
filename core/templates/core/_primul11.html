@@ -1,0 +1,27 @@
+{# Echipa de start anunțată de club (content/primul11.yml). Variabilă: lineup #}
+<div class="card lineup-card" id="primul11">
+  <div class="card-title">
+    <h2>Echipa de start</h2>
+    <span class="formation">{{ lineup.formation }}</span>
+  </div>
+  <div class="pitch" role="img" aria-label="Echipa de start, formația {{ lineup.formation }}">
+    <div class="pitch-lines" aria-hidden="true"><span class="half"></span><span class="circle"></span><span class="box box-top"></span><span class="box box-bottom"></span></div>
+    {% for row in lineup.rows %}
+    <div class="pitch-row">
+      {% for p in row.players %}
+      <a class="pitch-player{% if row.key == 'portar' %} gk{% endif %}" href="{{ p.get_absolute_url }}" title="{{ p.name }}">
+        <span class="shirt">{{ p.number|default:"" }}</span>
+        <span class="pname">{{ p.name }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if lineup.bench %}
+  <p class="small" style="margin:14px 0 0"><b>Rezerve:</b>
+    {% for p in lineup.bench %}<a href="{{ p.get_absolute_url }}">{% if p.number %}{{ p.number }}. {% endif %}{{ p.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+  </p>
+  {% endif %}
+  {% if lineup.coach %}<p class="small" style="margin:6px 0 0"><b>Antrenor:</b> {{ lineup.coach }}</p>{% endif %}
+  {% if lineup.note %}<p class="small muted" style="margin:6px 0 0">{{ lineup.note }}</p>{% endif %}
+</div>

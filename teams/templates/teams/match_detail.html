@@ -47,7 +47,8 @@
   <div class="card empty mt"><b>Detaliile meciului nu au fost încă importate.</b></div>
   {% endif %}
 {% else %}
-  <div class="grid grid-2">
+  {% if lineup %}{% include "core/_primul11.html" %}{% endif %}
+  <div class="grid grid-2{% if lineup %} mt{% endif %}">
     {% include "teams/_preview_side.html" with team=match.home r=home_row %}
     {% include "teams/_preview_side.html" with team=match.away r=away_row %}
   </div>

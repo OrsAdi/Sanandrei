@@ -5,19 +5,19 @@
 <div class="grid grid-main">
   <div class="card">
     <h2>Trimite un mesaj</h2>
-    <form method="post" class="form-grid" novalidate>
-      {% csrf_token %}
-      {{ form.website }}
+    <form class="form-grid" data-web3form="contact" data-subject="Mesaj nou de pe site">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
       <div class="grid grid-2" style="gap:14px">
-        <div>{{ form.name.label_tag }}{{ form.name }}{{ form.name.errors }}</div>
-        <div>{{ form.email.label_tag }}{{ form.email }}{{ form.email.errors }}</div>
+        <div><label for="c-name">Nume</label><input class="input" id="c-name" name="name" required maxlength="100"></div>
+        <div><label for="c-email">Email</label><input class="input" id="c-email" type="email" name="email" required></div>
       </div>
       <div class="grid grid-2" style="gap:14px">
-        <div>{{ form.phone.label_tag }}{{ form.phone }}{{ form.phone.errors }}</div>
-        <div>{{ form.subject.label_tag }}{{ form.subject }}{{ form.subject.errors }}</div>
+        <div><label for="c-phone">Telefon</label><input class="input" id="c-phone" type="tel" name="phone" maxlength="30"></div>
+        <div><label for="c-subject">Subiect</label><input class="input" id="c-subject" name="subject" required maxlength="150"></div>
       </div>
-      <div>{{ form.message.label_tag }}{{ form.message }}{{ form.message.errors }}</div>
+      <div><label for="c-message">Mesaj</label><textarea class="input" id="c-message" name="message" rows="6" required></textarea></div>
       <div><button class="btn" type="submit">Trimite mesajul</button></div>
+      <p class="form-status" role="status" hidden></p>
     </form>
   </div>
   <aside>
@@ -25,8 +25,8 @@
       <h3>Date de contact</h3>
       <p><b>{{ CLUB_NAME }}</b></p>
       <p>📍 {{ CLUB_VENUE }}</p>
-      <p>✉️ {{ CLUB_EMAIL }}</p>
-      {% if CLUB_PHONE %}<p>📞 {{ CLUB_PHONE }}</p>{% endif %}
+      <p>✉️ <a href="mailto:{{ CLUB_EMAIL }}">{{ CLUB_EMAIL }}</a></p>
+      {% if CLUB_PHONE %}<p>📞 <a href="tel:{{ CLUB_PHONE|cut:' ' }}">{{ CLUB_PHONE }}</a></p>{% endif %}
       <p><a href="{{ FRF_TEAM_URL }}" target="_blank" rel="noopener">Pagina clubului pe frf-ajf.ro ↗</a></p>
     </div>
     <div class="card" style="padding:0;overflow:hidden">

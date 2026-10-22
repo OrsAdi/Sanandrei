@@ -1,0 +1,275 @@
+# Configurarea editorului Pages CMS (https://app.pagescms.org).
+# Clubul editează conținutul de aici; fiecare salvare republică site-ul în ~2 minute.
+
+media:
+  input: media
+  output: /media
+  rename: safe
+  categories: [image]
+
+settings:
+  commit:
+    identity: user
+
+content:
+  - name: stiri
+    label: Știri
+    type: collection
+    path: content/stiri
+    format: yaml-frontmatter
+    filename: "{year}-{month}-{day}-{fields.titlu}.md"
+    view:
+      fields: [titlu, data, publicat]
+      primary: titlu
+      sort: [data, titlu]
+      default:
+        sort: data
+        order: desc
+    fields:
+      - name: titlu
+        label: Titlu
+        type: string
+        required: true
+      - name: data
+        label: Data publicării
+        type: date
+        options:
+          time: true
+          format: "yyyy-MM-dd'T'HH:mm"
+      - name: rezumat
+        label: Rezumat
+        type: text
+        description: O frază scurtă, apare pe pagina principală și în lista de știri.
+        options:
+          maxlength: 300
+      - name: imagine
+        label: Poză principală
+        type: image
+      - name: publicat
+        label: Publicat
+        type: boolean
+        default: true
+        description: Debifați ca să ascundeți știrea fără să o ștergeți.
+      - name: body
+        label: Text
+        type: rich-text
+        options:
+          format: markdown
+
+  - name: primul11
+    label: Primul 11
+    type: file
+    path: content/primul11.yml
+    format: yaml
+    fields:
+      - name: publicat
+        label: Afișează echipa de start pe site
+        type: boolean
+      - name: etapa
+        label: Etapa
+        type: number
+        required: true
+        description: Numărul etapei pentru care anunțați echipa. După meci, echipa dispare automat de pe site.
+      - name: portar
+        label: Portar
+        type: reference
+        options:
+          collection: jucatori
+          search: "nume, numar"
+          value: "{fields.frf_id}"
+          label: "{fields.numar} {fields.nume}"
+      - name: fundasi
+        label: Fundași
+        type: reference
+        description: De la dreapta la stânga, cum apar pe teren.
+        options:
+          collection: jucatori
+          search: "nume, numar"
+          value: "{fields.frf_id}"
+          label: "{fields.numar} {fields.nume}"
+          multiple: true
+          max: 6
+      - name: mijlocasi
+        label: Mijlocași
+        type: reference
+        options:
+          collection: jucatori
+          search: "nume, numar"
+          value: "{fields.frf_id}"
+          label: "{fields.numar} {fields.nume}"
+          multiple: true
+          max: 6
+      - name: mijlocasi_ofensivi
+        label: Mijlocași ofensivi (opțional, ex. pentru 4-2-3-1)
+        type: reference
+        options:
+          collection: jucatori
+          search: "nume, numar"
+          value: "{fields.frf_id}"
+          label: "{fields.numar} {fields.nume}"
+          multiple: true
+          max: 6
+      - name: atacanti
+        label: Atacanți
+        type: reference
+        options:
+          collection: jucatori
+          search: "nume, numar"
+          value: "{fields.frf_id}"
+          label: "{fields.numar} {fields.nume}"
+          multiple: true
+          max: 6
+      - name: rezerve
+        label: Rezerve
+        type: reference
+        options:
+          collection: jucatori
+          search: "nume, numar"
+          value: "{fields.frf_id}"
+          label: "{fields.numar} {fields.nume}"
+          multiple: true
+          max: 12
+      - name: antrenor
+        label: Antrenor
+        type: string
+      - name: nota
+        label: Notă
+        type: text
+        description: Opțional, ex. „Ne vedem sâmbătă la ora 11!”
+
+  - name: jucatori
+    label: Jucători
+    type: collection
+    path: content/jucatori
+    format: yaml
+    # Jucătorii sunt creați automat din lotul de pe frf-ajf.ro.
+    operations:
+      create: false
+      rename: false
+      delete: false
+    view:
+      fields: [numar, nume, pozitie, in_lot]
+      primary: nume
+      sort: [numar, nume]
+      default:
+        sort: numar
+        order: asc
+    fields:
+      - name: nume
+        label: Nume (de pe FRF)
+        type: string
+        readonly: true
+      - name: frf_id
+        label: ID FRF
+        type: number
+        readonly: true
+      - name: in_lot
+        label: În lotul oficial FRF
+        type: boolean
+        readonly: true
+      - name: numar
+        label: Număr pe tricou
+        type: number
+      - name: pozitie
+        label: Post
+        type: select
+        options:
+          values:
+            - { name: Portar, label: Portar }
+            - { name: Fundaș, label: Fundaș }
+            - { name: Mijlocaș, label: Mijlocaș }
+            - { name: Atacant, label: Atacant }
+      - name: poza
+        label: Poză
+        type: image
+      - name: descriere
+        label: Despre jucător
+        type: text
+
+  - name: produse
+    label: Magazin
+    type: collection
+    path: content/produse
+    format: yaml-frontmatter
+    filename: "{fields.nume}.md"
+    view:
+      fields: [nume, pret, in_stoc, activ]
+      primary: nume
+    fields:
+      - name: nume
+        label: Nume produs
+        type: string
+        required: true
+      - name: categorie
+        label: Categorie
+        type: string
+        description: Ex. Echipament, Suveniruri. Produsele cu aceeași categorie sunt grupate.
+      - name: pret
+        label: Preț (lei)
+        type: number
+        required: true
+      - name: imagine
+        label: Poză
+        type: image
+      - name: marimi
+        label: Mărimi
+        type: string
+        list: true
+        description: Lăsați gol dacă produsul nu are mărimi (ex. fular).
+      - name: in_stoc
+        label: În stoc
+        type: boolean
+        default: true
+      - name: activ
+        label: Afișat pe site
+        type: boolean
+        default: true
+      - name: body
+        label: Descriere
+        type: rich-text
+        options:
+          format: markdown
+
+  - name: sponsori
+    label: Sponsori
+    type: file
+    path: content/sponsori.yml
+    format: yaml
+    list: true
+    fields:
+      - name: nume
+        label: Nume
+        type: string
+        required: true
+      - name: logo
+        label: Logo
+        type: image
+      - name: site
+        label: Site web
+        type: string
+
+  - name: setari
+    label: Setări site
+    type: file
+    path: content/setari.yml
+    format: yaml
+    fields:
+      - name: email
+        label: Email club
+        type: string
+        description: Apare pe site; formularele de contact și comenzile ajung la adresa setată în Web3Forms.
+      - name: telefon
+        label: Telefon
+        type: string
+      - name: stadion
+        label: Adresa stadionului
+        type: string
+      - name: despre
+        label: Despre club (subsol)
+        type: text
+      - name: facebook
+        label: Link Facebook
+        type: string
+      - name: instagram
+        label: Link Instagram
+        type: string
