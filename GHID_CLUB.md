@@ -25,17 +25,21 @@ Ca să ascundeți o știre fără să o ștergeți, debifați **Publicat** și s
 
 1. **Primul 11**.
 2. La **Meciul** alegeți meciul din listă (apar următoarele meciuri ale echipei).
-3. Alegeți jucătorii pe linii: **Portar**, **Fundași**, **Mijlocași**, **Mijlocași ofensivi** (doar dacă jucați
-   de exemplu 4-2-3-1) și **Atacanți**. Fiecare listă are toți jucătorii clubului; scrieți câteva litere din nume
-   ca să-l găsiți repede. Formația (4-4-2, 4-3-3…) se calculează singură.
-4. Adăugați **Rezervele** și, dacă vreți, **Antrenorul** și o **Notă**.
-5. Apăsați **Save** și așteptați mesajul de confirmare.
+3. Alegeți **Formația** (4-4-2, 4-3-3, 4-2-3-1…).
+4. La **Titulari** alegeți cei 11 jucători **în ordine**: întâi portarul, apoi fundașii, mijlocașii și atacanții,
+   fiecare linie de la dreapta la stânga. Scrieți câteva litere din nume ca să-l găsiți repede. Un jucător ales
+   o dată nu mai poate fi ales a doua oară.
+5. Adăugați **Rezervele** și, dacă vreți, **Antrenorul** și o **Notă**.
+6. Apăsați **Save** și așteptați mesajul de confirmare.
 
-În aproximativ 2 minute echipa apare pe pagina principală și pe pagina meciului, desenată pe teren. După ce meciul
-s-a jucat, dispare automat. Pentru meciul următor schimbați doar meciul și jucătorii.
+În aproximativ 2 minute echipa apare desenată pe teren:
 
-Dacă ați ales din greșeală același jucător pe două linii, pe site el apare o singură dată, pe prima linie
-(portar → fundași → mijlocași → atacanți). Verificați echipa pe site după salvare.
+- pe **pagina principală**, primul chenar de sub banda neagră de sus (și butonul **Echipa de start** din chenarul
+  „Următorul meci” duce direct la ea);
+- pe **pagina meciului** (butonul **Detalii meci**).
+
+După ce meciul s-a jucat, echipa dispare automat. Pentru meciul următor schimbați doar meciul și jucătorii.
+Dacă un jucător apare pe alt post decât vreți, verificați ordinea în care i-ați ales la Titulari.
 
 ## Jucători
 

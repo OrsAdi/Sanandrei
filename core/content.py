@@ -125,6 +125,10 @@ def site_settings():
 
 # --------------------------------------------------------------------------- Primul 11
 
+# Formațiile din editor (Pages CMS). Liniile sunt de la apărare spre atac.
+FORMATIONS = ["4-4-2", "4-3-3", "4-2-3-1", "4-1-4-1", "4-4-1-1", "4-5-1", "4-3-1-2",
+              "3-5-2", "3-4-3", "3-4-1-2", "5-3-2", "5-4-1"]
+
 LINES = [
     ("atacanti", "Atacanți"),
     ("mijlocasi_ofensivi", "Mijlocași ofensivi"),
@@ -165,31 +169,78 @@ def lineup_for_round(round_number):
 
     from teams.models import Player
 
-    # Un jucător ales de două ori apare o singură dată: pe prima linie (portar → atacanți), apoi la rezerve.
-    used = set()
-    picked = {}
-    for key in ["portar", "fundasi", "mijlocasi", "mijlocasi_ofensivi", "atacanti", "rezerve"]:
-        picked[key] = []
-        for i in _ids(data.get(key)):
-            if i not in used:
-                used.add(i)
-                picked[key].append(i)
-    players = {p.frf_id: p for p in Player.objects.filter(frf_id__in=used)}
+    def unique(ids, exclude=()):
+        seen, out = set(exclude), []
+        for i in ids:
+            if i not in seen:
+                seen.add(i)
+                out.append(i)
+        return out
 
-    rows = []
-    for key, label in LINES:
-        members = [players[i] for i in picked[key] if i in players]
-        if members:
-            rows.append({"key": key, "label": label, "players": members})
-    starters = sum(len(r["players"]) for r in rows)
-    outfield = [len(r["players"]) for r in reversed(rows) if r["key"] != "portar"]
+    if data.get("titulari"):
+        # Formatul actual: o singură listă „titulari” (fiecare jucător o dată), în ordine:
+        # portarul, apoi fundașii, mijlocașii, atacanții; liniile se împart după formație.
+        starters = unique(_ids(data.get("titulari")))[:11]
+        bench = unique(_ids(data.get("rezerve")), exclude=starters)
+        players = {p.frf_id: p for p in Player.objects.filter(frf_id__in=starters + bench)}
+        starters = [i for i in starters if i in players]
+        outfield = starters[1:]
+        parts = _formation_parts(data.get("formatie"), len(outfield))
+        lines, pos = [], 0
+        for n in parts:
+            lines.append(outfield[pos:pos + n])
+            pos += n
+        rows = [{"key": "portar", "label": "Portar", "players": [players[i] for i in starters[:1]]}]
+        for k, ids in enumerate(lines):
+            key = "fundasi" if k == 0 else "atacanti" if k == len(lines) - 1 else "mijlocasi"
+            rows.append({"key": key, "label": key, "players": [players[i] for i in ids]})
+        rows = [r for r in reversed(rows) if r["players"]]
+        bench_players = [players[i] for i in bench if i in players]
+        formation = "-".join(str(len(r["players"])) for r in reversed(rows) if r["key"] != "portar")
+    else:
+        # Formatul vechi: câte o listă pe linie. Un jucător ales de două ori apare o singură dată.
+        used, picked = set(), {}
+        for key in ["portar", "fundasi", "mijlocasi", "mijlocasi_ofensivi", "atacanti", "rezerve"]:
+            picked[key] = unique(_ids(data.get(key)), exclude=used)
+            used.update(picked[key])
+        players = {p.frf_id: p for p in Player.objects.filter(frf_id__in=used)}
+        rows = []
+        for key, label in LINES:
+            members = [players[i] for i in picked[key] if i in players]
+            if members:
+                rows.append({"key": key, "label": label, "players": members})
+        bench_players = [players[i] for i in picked["rezerve"] if i in players]
+        formation = "-".join(str(len(r["players"])) for r in reversed(rows) if r["key"] != "portar")
+
+    starters_count = sum(len(r["players"]) for r in rows)
     return {
         "round": etapa,
         "rows": rows,
-        "formation": "-".join(str(n) for n in outfield),
-        "count": starters,
-        "complete": starters == 11,
-        "bench": [players[i] for i in picked["rezerve"] if i in players],
+        "formation": formation,
+        "count": starters_count,
+        "complete": starters_count == 11,
+        "bench": bench_players,
         "coach": data.get("antrenor") or "",
         "note": data.get("nota") or "",
     }
+
+
+def _formation_parts(value, outfield):
+    """'4-2-3-1' -> [4, 2, 3, 1], potrivit cu numărul de jucători de câmp aleși."""
+    try:
+        parts = [int(x) for x in str(value or "").split("-") if x.strip()]
+    except ValueError:
+        parts = []
+    if not parts or any(n <= 0 for n in parts):
+        parts = [4, 4, 2]
+    if sum(parts) == outfield:
+        return parts
+    # Echipă incompletă sau prea mulți jucători: completăm liniile în ordine, restul merg în atac.
+    result, left = [], outfield
+    for n in parts:
+        take = min(n, left)
+        result.append(take)
+        left -= take
+    if left:
+        result[-1] += left
+    return [n for n in result if n] or [outfield]

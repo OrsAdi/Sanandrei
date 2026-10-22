@@ -97,9 +97,9 @@ class PlayersAndLineupTests(ContentTestCase):
         call_command("export_players", stdout=open("/dev/null", "w"))
         config = yaml.safe_load((self.tmp / ".pages.yml").read_text())
         fields = {f["name"]: f for c in config["content"] if c["name"] == "primul11" for f in c["fields"]}
-        values = fields["fundasi"]["options"]["values"]
-        self.assertEqual(fields["portar"]["type"], "select")
-        self.assertTrue(fields["fundasi"]["options"]["multiple"])
+        values = fields["titulari"]["options"]["values"]
+        self.assertEqual(fields["formatie"]["type"], "select")
+        self.assertTrue(fields["titulari"]["options"]["multiple"])
         self.assertEqual(values[0], {"name": "3", "label": "10 · Acasa 3 (Atacant)"}, "jucătorii cu număr primii")
         self.assertEqual(len(values), Player.objects.filter(team__frf_id=205).count())
 
@@ -135,6 +135,25 @@ class PlayersAndLineupTests(ContentTestCase):
         fields = {f["name"]: f for c in config["content"] if c["name"] == "primul11" for f in c["fields"]}
         self.assertEqual([v["name"] for v in fields["meci"]["options"]["values"]], ["7"])
         self.assertNotIn("publicat", fields)
+        self.assertEqual(fields["titulari"]["options"]["max"], 11)
+        self.assertNotIn("fundasi", fields, "o singură listă de titulari, fără dubluri între linii")
+
+    def test_starters_list_placed_by_formation(self):
+        self.write("primul11.yml", yaml.safe_dump({
+            "meci": "7", "formatie": "4-2-3-1",
+            "titulari": [str(i) for i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 3]],
+            "rezerve": ["11", "12"],
+        }))
+        lineup = content.lineup_for_round(7)
+        self.assertEqual(lineup["formation"], "4-2-3-1")
+        rows = [[p.frf_id for p in r["players"]] for r in lineup["rows"]]
+        self.assertEqual(rows, [[11], [8, 9, 10], [6, 7], [2, 3, 4, 5], [1]], "atac sus, portar jos")
+        self.assertEqual([p.frf_id for p in lineup["bench"]], [12], "titularii nu apar la rezerve")
+
+    def test_incomplete_starters_still_shown(self):
+        self.write("primul11.yml", yaml.safe_dump({"meci": "7", "formatie": "4-3-3",
+                                                   "titulari": ["1", "2", "3", "4", "5", "6"]}))
+        self.assertEqual(content.lineup_for_round(7)["formation"], "4-1")
 
     def test_unpublished_lineup_hidden(self):
         self.write("primul11.yml", "publicat: false\netapa: 7\nportar: '1'\n")

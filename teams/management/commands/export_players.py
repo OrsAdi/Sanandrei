@@ -54,13 +54,12 @@ class Command(BaseCommand):
 
     # ------------------------------------------------------------------ Primul 11 în Pages CMS
 
+    # Titularii sunt o singură listă, deci un jucător nu poate fi ales de două ori.
     LINEUP_FIELDS = [
-        ("portar", "Portar", None, ""),
-        ("fundasi", "Fundași", 6, "De la dreapta la stânga, cum apar pe teren."),
-        ("mijlocasi", "Mijlocași", 6, ""),
-        ("mijlocasi_ofensivi", "Mijlocași ofensivi (opțional, ex. pentru 4-2-3-1)", 6, ""),
-        ("atacanti", "Atacanți", 6, ""),
-        ("rezerve", "Rezerve", 12, ""),
+        ("titulari", "Titulari (11)", 11,
+         "Alegeți în ordine: portarul, apoi fundașii, mijlocașii și atacanții (fiecare linie de la dreapta la stânga). "
+         "Pe teren se așază după formația aleasă."),
+        ("rezerve", "Rezerve", 12, "Un jucător ales la titulari nu apare și la rezerve."),
     ]
     START = "      # >>> LISTA JUCĂTORI"
     END = "      # <<< LISTA JUCĂTORI"
@@ -131,6 +130,17 @@ class Command(BaseCommand):
         ]
         for value, mlabel in self.upcoming_matches():
             lines.append(f"            - {{ name: {q(value)}, label: {q(mlabel, ensure_ascii=False)} }}")
+        lines += [
+            "      - name: formatie",
+            "        label: \"Formația\"",
+            "        type: select",
+            "        required: true",
+            "        options:",
+            "          placeholder: Alegeți formația",
+            "          values:",
+        ]
+        for f in content.FORMATIONS:
+            lines.append(f"            - {{ name: {q(f)}, label: {q(f)} }}")
         for name, label, max_count, description in self.LINEUP_FIELDS:
             lines += [f"      - name: {name}", f"        label: {q(label, ensure_ascii=False)}", "        type: select"]
             if description:
