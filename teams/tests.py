@@ -215,4 +215,6 @@ class ViewTests(TestCase):
     def test_empty_database(self):
         Team.objects.all().delete()
         self.assertEqual(self.client.get(reverse("home")).status_code, 200)
-        self.assertEqual(self.client.get(reverse("squad_list")).status_code, 404)
+        for name in ("squad_list", "fixtures", "stats"):
+            response = self.client.get(reverse(name))
+            self.assertContains(response, "în curând")

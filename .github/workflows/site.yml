@@ -52,10 +52,16 @@ jobs:
         run: uv sync --locked
 
       - name: Baza de date
-        run: uv run python manage.py migrate --noinput
+        id: db
+        run: |
+          # La primul rulaj (încă nu există date în repo) sincronizăm chiar și la un push.
+          if [ "${{ github.event_name }}" != "push" ] || ! git ls-files --error-unmatch data/frf.sqlite3 >/dev/null 2>&1; then
+            echo "sync=true" >> "$GITHUB_OUTPUT"
+          fi
+          uv run python manage.py migrate --noinput
 
       - name: Sincronizare frf-ajf.ro
-        if: github.event_name != 'push'
+        if: steps.db.outputs.sync == 'true'
         # Dacă FRF nu răspunde, publicăm totuși site-ul cu datele existente.
         continue-on-error: true
         run: |
@@ -75,7 +81,7 @@ jobs:
       # Baza de date intră în repo doar când s-a schimbat ceva (rezultat nou, lot nou…),
       # nu la fiecare verificare, ca repo-ul să nu crească inutil.
       - name: Salvare date în repo
-        if: github.event_name != 'push'
+        if: steps.db.outputs.sync == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

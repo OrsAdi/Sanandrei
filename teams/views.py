@@ -16,15 +16,15 @@ POSITION_GROUPS = [
 ]
 
 
-def _our_team_or_404():
-    team = stats.our_team()
-    if team is None:
-        raise Http404("Datele nu au fost încă importate. Rulați: python manage.py sync_frf")
-    return team
+def _no_data(request, title):
+    """Înainte de prima sincronizare cu frf-ajf.ro: pagină de așteptare (nu 404, ca site-ul să se poată genera)."""
+    return render(request, "teams/no_data.html", {"title": title})
 
 
 def squad_list(request):
-    team = _our_team_or_404()
+    team = stats.our_team()
+    if team is None:
+        return _no_data(request, "Lotul")
     players = stats.player_stats(team=team)
     active = [p for p in players if p.apps]
     others = sorted((p for p in players if not p.apps and p.registered and p.team_id == team.pk),
@@ -72,7 +72,9 @@ def player_detail(request, pk):
 
 def fixtures(request, etapa=None):
     """Programul și rezultatele echipei noastre + navigare pe etape pentru toată liga."""
-    team = _our_team_or_404()
+    team = stats.our_team()
+    if team is None:
+        return _no_data(request, "Program și rezultate")
     matches = list(stats.team_matches(team))
     played = [m for m in matches if m.is_finished]
     upcoming = [m for m in matches if not m.is_finished]
@@ -157,7 +159,9 @@ def standings(request, tip="general", etapa=None):
 
 
 def stats_list(request):
-    team = _our_team_or_404()
+    team = stats.our_team()
+    if team is None:
+        return _no_data(request, "Statistici")
     matches = list(stats.finished_matches())
     table = stats.standings(matches=matches)
     our_row = next((r for r in table if r.team.pk == team.pk), None)
