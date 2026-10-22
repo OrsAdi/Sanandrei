@@ -153,10 +153,11 @@ def lineup_for_round(round_number):
     Întoarce None dacă nu există sau e pentru altă etapă.
     """
     data = read_yaml(content_dir() / "primul11.yml", {}) or {}
-    if not as_bool(data.get("publicat"), default=False):
+    # „publicat” e opțional (versiunile vechi ale editorului îl aveau); implicit afișăm
+    if not as_bool(data.get("publicat"), default=True):
         return None
     try:
-        etapa = int(data.get("etapa") or 0)
+        etapa = int(data.get("meci") or data.get("etapa") or 0)
     except (TypeError, ValueError):
         return None
     if not etapa or etapa != round_number:
@@ -164,12 +165,20 @@ def lineup_for_round(round_number):
 
     from teams.models import Player
 
-    all_ids = [i for key, _ in LINES for i in _ids(data.get(key))] + _ids(data.get("rezerve"))
-    players = {p.frf_id: p for p in Player.objects.filter(frf_id__in=all_ids)}
+    # Un jucător ales de două ori apare o singură dată: pe prima linie (portar → atacanți), apoi la rezerve.
+    used = set()
+    picked = {}
+    for key in ["portar", "fundasi", "mijlocasi", "mijlocasi_ofensivi", "atacanti", "rezerve"]:
+        picked[key] = []
+        for i in _ids(data.get(key)):
+            if i not in used:
+                used.add(i)
+                picked[key].append(i)
+    players = {p.frf_id: p for p in Player.objects.filter(frf_id__in=used)}
 
     rows = []
     for key, label in LINES:
-        members = [players[i] for i in _ids(data.get(key)) if i in players]
+        members = [players[i] for i in picked[key] if i in players]
         if members:
             rows.append({"key": key, "label": label, "players": members})
     starters = sum(len(r["players"]) for r in rows)
@@ -180,7 +189,7 @@ def lineup_for_round(round_number):
         "formation": "-".join(str(n) for n in outfield),
         "count": starters,
         "complete": starters == 11,
-        "bench": [players[i] for i in _ids(data.get("rezerve")) if i in players],
+        "bench": [players[i] for i in picked["rezerve"] if i in players],
         "coach": data.get("antrenor") or "",
         "note": data.get("nota") or "",
     }

@@ -61,16 +61,23 @@ content:
     type: file
     path: content/primul11.yml
     format: yaml
+    # Echipa apare pe site imediat după Save și dispare singură după ce meciul s-a jucat.
     fields:
-      - name: publicat
-        label: Afișează echipa de start pe site
-        type: boolean
-      - name: etapa
-        label: Etapa
-        type: number
-        required: true
-        description: Numărul etapei pentru care anunțați echipa. După meci, echipa dispare automat de pe site.
       # >>> LISTA JUCĂTORI – generată automat la fiecare sincronizare (export_players). Nu editați manual.
+      - name: meci
+        label: "Meciul"
+        type: select
+        required: true
+        description: "Echipa apare pe site pentru acest meci și dispare singură după ce s-a jucat."
+        options:
+          placeholder: Alegeți meciul
+          values:
+            - { name: "10", label: "Etapa 10 · CSC Belinț – CS Sânandrei Timiș · sâm 24.10, 16:00" }
+            - { name: "11", label: "Etapa 11 · CS Sânandrei Timiș – Club Sportiv Giroc-Chisoda · dată neanunțată" }
+            - { name: "12", label: "Etapa 12 · CS Unirea Sânnicolau Mare – CS Sânandrei Timiș · dată neanunțată" }
+            - { name: "13", label: "Etapa 13 · CS Sânandrei Timiș – CSM Lugoj · dată neanunțată" }
+            - { name: "14", label: "Etapa 14 · CSC Ghiroda și Giarmata Vii – CS Sânandrei Timiș · dată neanunțată" }
+            - { name: "15", label: "Etapa 15 · CS Sânandrei Timiș – CS Flacăra Parța · dată neanunțată" }
       - name: portar
         label: "Portar"
         type: select

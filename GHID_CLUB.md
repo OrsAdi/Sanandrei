@@ -24,15 +24,18 @@ Ca să ascundeți o știre fără să o ștergeți, debifați **Publicat** și s
 ## Anunțarea primului 11
 
 1. **Primul 11**.
-2. La **Etapa** scrieți numărul etapei următorului meci (îl vedeți pe pagina principală: „Următorul meci · Etapa …”).
+2. La **Meciul** alegeți meciul din listă (apar următoarele meciuri ale echipei).
 3. Alegeți jucătorii pe linii: **Portar**, **Fundași**, **Mijlocași**, **Mijlocași ofensivi** (doar dacă jucați
-   de exemplu 4-2-3-1) și **Atacanți**. Scrieți numele sau numărul și alegeți din listă. Formația (4-4-2, 4-3-3…)
-   se calculează singură.
+   de exemplu 4-2-3-1) și **Atacanți**. Fiecare listă are toți jucătorii clubului; scrieți câteva litere din nume
+   ca să-l găsiți repede. Formația (4-4-2, 4-3-3…) se calculează singură.
 4. Adăugați **Rezervele** și, dacă vreți, **Antrenorul** și o **Notă**.
-5. Bifați **Afișează echipa de start pe site** și apăsați **Save**.
+5. Apăsați **Save** și așteptați mesajul de confirmare.
 
-Echipa apare pe pagina principală și pe pagina meciului, desenată pe teren. După ce meciul s-a jucat, dispare
-automat. Pentru meciul următor schimbați doar etapa și jucătorii.
+În aproximativ 2 minute echipa apare pe pagina principală și pe pagina meciului, desenată pe teren. După ce meciul
+s-a jucat, dispare automat. Pentru meciul următor schimbați doar meciul și jucătorii.
+
+Dacă ați ales din greșeală același jucător pe două linii, pe site el apare o singură dată, pe prima linie
+(portar → fundași → mijlocași → atacanți). Verificați echipa pe site după salvare.
 
 ## Jucători
 

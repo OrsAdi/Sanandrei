@@ -65,6 +65,25 @@ class Command(BaseCommand):
     START = "      # >>> LISTA JUCĂTORI"
     END = "      # <<< LISTA JUCĂTORI"
 
+    DAYS = ["lun", "mar", "mie", "joi", "vin", "sâm", "dum"]
+
+    def upcoming_matches(self, limit=6):
+        """Următoarele meciuri ale echipei: (etapa, „Etapa 10 · A – B · sâm 17.10, 11:00”)."""
+        from django.utils import timezone
+
+        team = stats.our_team()
+        if team is None:
+            return []
+        result = []
+        for m in [m for m in stats.team_matches(team) if not m.is_finished][:limit]:
+            if m.date:
+                d = timezone.localtime(m.date)
+                when = f"{self.DAYS[d.weekday()]} {d:%d.%m}, {d:%H:%M}"
+            else:
+                when = "dată neanunțată"
+            result.append((str(m.round), f"Etapa {m.round} · {m.home.name} – {m.away.name} · {when}"))
+        return result
+
     def update_lineup_choices(self, folder):
         """
         Scrie în .pages.yml lista completă de jucători pentru câmpurile din Primul 11,
@@ -100,6 +119,18 @@ class Command(BaseCommand):
 
         q = json.dumps  # JSON e YAML valid și pune ghilimele corect pentru orice nume
         lines = [self.START + " – generată automat la fiecare sincronizare (export_players). Nu editați manual."]
+        lines += [
+            "      - name: meci",
+            "        label: \"Meciul\"",
+            "        type: select",
+            "        required: true",
+            "        description: \"Echipa apare pe site pentru acest meci și dispare singură după ce s-a jucat.\"",
+            "        options:",
+            "          placeholder: Alegeți meciul",
+            "          values:",
+        ]
+        for value, mlabel in self.upcoming_matches():
+            lines.append(f"            - {{ name: {q(value)}, label: {q(mlabel, ensure_ascii=False)} }}")
         for name, label, max_count, description in self.LINEUP_FIELDS:
             lines += [f"      - name: {name}", f"        label: {q(label, ensure_ascii=False)}", "        type: select"]
             if description:

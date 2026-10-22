@@ -118,6 +118,24 @@ class PlayersAndLineupTests(ContentTestCase):
         self.assertContains(response, "Echipa de start")
         self.assertContains(response, "4-3-3")
 
+    def test_match_field_and_duplicates(self):
+        self.write("primul11.yml", yaml.safe_dump({
+            "meci": "7", "portar": "1", "fundasi": ["2", "3", "1"], "atacanti": ["3", "9"], "rezerve": ["9", "12"],
+        }))
+        lineup = content.lineup_for_round(7)
+        self.assertIsNotNone(lineup, "fără bifa „publicat” echipa se afișează")
+        names = [p.frf_id for row in lineup["rows"] for p in row["players"]]
+        self.assertEqual(sorted(names), [1, 2, 3, 9], "fiecare jucător apare o singură dată")
+        self.assertEqual([p.frf_id for p in lineup["bench"]], [12])
+
+    def test_export_lists_upcoming_matches(self):
+        shutil.copy(Path(__file__).resolve().parent.parent / ".pages.yml", self.tmp / ".pages.yml")
+        call_command("export_players", stdout=open("/dev/null", "w"))
+        config = yaml.safe_load((self.tmp / ".pages.yml").read_text())
+        fields = {f["name"]: f for c in config["content"] if c["name"] == "primul11" for f in c["fields"]}
+        self.assertEqual([v["name"] for v in fields["meci"]["options"]["values"]], ["7"])
+        self.assertNotIn("publicat", fields)
+
     def test_unpublished_lineup_hidden(self):
         self.write("primul11.yml", "publicat: false\netapa: 7\nportar: '1'\n")
         self.assertIsNone(content.lineup_for_round(7))
