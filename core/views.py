@@ -1,10 +1,9 @@
-from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from teams import stats
 from teams.models import Match
 
-from .forms import ContactForm
+from . import content
 from .models import News, Sponsor
 
 
@@ -36,6 +35,7 @@ def home(request):
             "our_scorers": stats.top_scorers(limit=5, team=team),
             "next_round": (Match.objects.filter(round=next_match.round).select_related("home", "away")
                            if next_match else []),
+            "lineup": content.lineup_for_round(next_match.round) if next_match else None,
             "next_opponent_row": (next((r for r in table if r.team.pk == next_match.opponent_of(team).pk), None)
                                   if next_match else None),
         })
@@ -43,12 +43,8 @@ def home(request):
 
 
 def contact(request):
-    form = ContactForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, "Mulțumim! Mesajul a fost trimis, vă vom răspunde în curând.")
-        return redirect("contact")
-    return render(request, "core/contact.html", {"form": form})
+    # Site static: formularul e trimis din browser către Web3Forms (vezi static/js/site.js).
+    return render(request, "core/contact.html")
 
 
 def news_list(request):
@@ -58,3 +54,7 @@ def news_list(request):
 def news_detail(request, slug):
     item = get_object_or_404(News, slug=slug, is_published=True)
     return render(request, "core/news_detail.html", {"item": item})
+
+
+def not_found(request):
+    return render(request, "404.html", status=404)

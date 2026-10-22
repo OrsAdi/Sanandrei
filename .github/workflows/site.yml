@@ -1,0 +1,106 @@
+# Sincronizează datele de pe frf-ajf.ro și publică site-ul pe GitHub Pages.
+#
+# Rulează:
+#   - automat, zilnic și mai des în weekend (când se joacă meciurile);
+#   - la fiecare modificare făcută în Pages CMS (știri, Primul 11, jucători…) – doar republică, fără sincronizare;
+#   - manual: tabul Actions → „Site” → Run workflow (opțional cu „full” = reimport complet).
+#
+# Variabile opționale (Settings → Secrets and variables → Actions → Variables):
+#   WEB3FORMS_KEY  cheia de pe web3forms.com – formularele de contact și comenzi ajung pe email
+#   SITE_CNAME     domeniul propriu, ex. cssanandrei.ro (lăsați gol pentru orsadi.github.io/Sanandrei)
+name: Site
+
+on:
+  push:
+    branches: [master]
+  schedule:
+    - cron: "0 4 * * *"            # zilnic, 07:00 ora României
+    - cron: "0 13-21/2 * * 6,0"    # sâmbătă și duminică, la 2 ore după-amiaza și seara
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "Reimportă detaliile tuturor meciurilor (mai lent)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL_PREFIX: ${{ vars.SITE_CNAME && '/' || format('/{0}/', github.event.repository.name) }}
+      SITE_DOMAIN: ${{ vars.SITE_CNAME && format('https://{0}', vars.SITE_CNAME) || format('https://{0}.github.io', github.repository_owner) }}
+      SITE_CNAME: ${{ vars.SITE_CNAME }}
+      WEB3FORMS_KEY: ${{ vars.WEB3FORMS_KEY }}
+      DJANGO_DEBUG: "0"
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Instalare
+        run: uv sync --locked
+
+      - name: Baza de date
+        run: uv run python manage.py migrate --noinput
+
+      - name: Sincronizare frf-ajf.ro
+        if: github.event_name != 'push'
+        # Dacă FRF nu răspunde, publicăm totuși site-ul cu datele existente.
+        continue-on-error: true
+        run: |
+          uv run python manage.py dumpdata teams --exclude teams.SyncRun | sha256sum > /tmp/before
+          uv run python manage.py sync_frf ${{ inputs.full && '--full' || '' }}
+          uv run python manage.py dumpdata teams --exclude teams.SyncRun | sha256sum > /tmp/after
+
+      - name: Fișiere jucători noi pentru Pages CMS
+        run: uv run python manage.py export_players
+
+      - name: Conținut din Pages CMS
+        run: uv run python manage.py load_content
+
+      - name: Generare site
+        run: uv run python manage.py build_static --out dist
+
+      # Baza de date intră în repo doar când s-a schimbat ceva (rezultat nou, lot nou…),
+      # nu la fiecare verificare, ca repo-ul să nu crească inutil.
+      - name: Salvare date în repo
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -f /tmp/after ] && ! cmp -s /tmp/before /tmp/after; then
+            uv run python manage.py shell -c "from teams.models import SyncRun; from django.db import connection; keep=list(SyncRun.objects.values_list('pk', flat=True)[:20]); SyncRun.objects.exclude(pk__in=keep).delete(); connection.cursor().execute('VACUUM')"
+            git add data/frf.sqlite3
+          fi
+          git add content/jucatori
+          if git diff --cached --quiet; then echo "Nimic nou de salvat."; exit 0; fi
+          git commit -m "Date actualizate de pe frf-ajf.ro"
+          git stash --include-untracked --quiet || true
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
+          exit 1
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

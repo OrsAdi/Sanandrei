@@ -40,6 +40,12 @@ class Product(models.Model):
         return [s.strip() for s in self.sizes.split(",") if s.strip()]
 
     @property
+    def description_html(self):
+        from core.content import render_markdown
+
+        return render_markdown(self.description)
+
+    @property
     def in_stock(self):
         return self.stock > 0
 

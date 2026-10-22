@@ -2,23 +2,25 @@
 {% block title %}Finalizează comanda{% endblock %}
 {% block hero %}<section class="page-hero"><div class="container"><div class="eyebrow">Magazin</div><h1>Finalizează comanda</h1><p>Plata se face la ridicarea produselor de la club.</p></div></section>{% endblock %}
 {% block content %}
-<div class="grid grid-main">
+<div class="grid grid-main" data-checkout>
   <div class="card">
     <h2>Datele tale</h2>
-    <form method="post" class="form-grid" novalidate>
-      {% csrf_token %}
-      {% for field in form %}<div>{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endfor %}
+    <form class="form-grid" data-web3form="order" data-subject="Comandă nouă din magazinul online">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
+      <div><label for="o-name">Nume complet</label><input class="input" id="o-name" name="name" required maxlength="120"></div>
+      <div><label for="o-phone">Telefon</label><input class="input" id="o-phone" type="tel" name="phone" required maxlength="30"></div>
+      <div><label for="o-email">Email (opțional)</label><input class="input" id="o-email" type="email" name="email"></div>
+      <div><label for="o-note">Observații</label><textarea class="input" id="o-note" name="note" rows="3"></textarea></div>
       <div><button class="btn" type="submit">Trimite comanda</button></div>
+      <p class="form-status" role="status" hidden></p>
     </form>
   </div>
   <aside class="card">
     <h3>Sumar</h3>
-    {% for i in items %}
-      <div style="display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--line)">
-        <span>{{ i.quantity }} × {{ i.product.name }}{% if i.size %} ({{ i.size }}){% endif %}</span><b class="nowrap">{{ i.subtotal|floatformat:2 }} lei</b>
-      </div>
-    {% endfor %}
-    <p class="price right" style="margin-top:14px">Total: {{ total|floatformat:2 }} lei</p>
+    <div data-checkout-summary></div>
+    <p class="price right" style="margin-top:14px">Total: <span data-cart-total>0,00</span> lei</p>
   </aside>
 </div>
+<div class="card empty mt" data-cart-empty hidden><b>Coșul este gol.</b><a class="btn mt" href="{% url 'shop:product_list' %}">Vezi produsele</a></div>
 {% endblock %}
+{% block scripts %}{{ catalog|json_script:"shop-catalog" }}{% endblock %}

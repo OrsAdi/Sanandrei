@@ -43,7 +43,7 @@
           Adversar: locul {{ next_opponent_row.position }}, {{ next_opponent_row.points }} puncte · formă {% form_pills next_opponent_row.form %}
         </p>
         {% endif %}
-        <p class="center" style="margin:16px 0 0"><a class="btn btn-sm" href="{% url 'match_detail' next_match.pk %}">Detalii meci</a></p>
+        <p class="center" style="margin:16px 0 0"><a class="btn btn-sm" href="{% url 'match_detail' next_match.pk %}">Detalii meci</a>{% if lineup %} <a class="btn btn-sm btn-ghost" href="#primul11">Echipa de start</a>{% endif %}</p>
       </div>
       {% elif last_match %}
       <div class="match-card">
@@ -51,7 +51,7 @@
         {% include "core/_last_match.html" %}
       </div>
       {% else %}
-      <div class="match-card empty"><b>Nu există încă date.</b>Rulați <code>python manage.py sync_frf</code>.</div>
+      <div class="match-card empty"><b>Nu există încă date.</b>Datele de pe frf-ajf.ro apar după prima sincronizare.</div>
       {% endif %}
     </div>
   </div>
@@ -62,6 +62,8 @@
 {% if team %}
 <div class="grid grid-main mt">
   <div>
+    {% if lineup %}{% include "core/_primul11.html" %}{% endif %}
+
     {% if last_match %}
     <div class="card">
       <div class="card-title"><h2>Ultimul rezultat</h2><a href="{% url 'match_detail' last_match.pk %}">Raport complet →</a></div>
@@ -130,7 +132,7 @@
 </div>
 
 {% if next_round %}
-<h2 class="section-title">Etapa {{ next_match.round }} în {{ COMPETITION_NAME }} <a class="small" href="{% url 'fixtures' %}?etapa={{ next_match.round }}">Program →</a></h2>
+<h2 class="section-title">Etapa {{ next_match.round }} în {{ COMPETITION_NAME }} <a class="small" href="{% url 'fixtures_round' next_match.round %}#etape">Program →</a></h2>
 <div class="card">
   {% for m in next_round %}{% include "teams/_fixture.html" %}{% endfor %}
 </div>
