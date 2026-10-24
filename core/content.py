@@ -119,8 +119,66 @@ def site_settings():
         "CLUB_VENUE": data.get("stadion") or settings.CLUB_VENUE,
         "CLUB_FACEBOOK": data.get("facebook") or "",
         "CLUB_INSTAGRAM": data.get("instagram") or "",
+        "CLUB_YOUTUBE": data.get("youtube") or "",
+        "CLUB_TIKTOK": data.get("tiktok") or "",
         "CLUB_ABOUT": data.get("despre") or "",
+        "CLUB_MOTTO": data.get("moto") or DEFAULT_MOTTO,
+        "CLUB_MOTTO_TEXT": data.get("moto_text") or DEFAULT_MOTTO_TEXT,
     }
+
+
+DEFAULT_MOTTO = "Portocaliu în suflet"
+DEFAULT_MOTTO_TEXT = ("Suntem echipa comunei Sânandrei. Jucăm pentru oamenii de acasă, pentru copiii care "
+                      "visează să ajungă pe teren și pentru fiecare suporter din tribună.")
+
+
+def social_links(cfg):
+    """Rețelele sociale completate în Setări site, în ordinea afișării."""
+    links = [("facebook", "Facebook", cfg["CLUB_FACEBOOK"]), ("instagram", "Instagram", cfg["CLUB_INSTAGRAM"]),
+             ("youtube", "YouTube", cfg["CLUB_YOUTUBE"]), ("tiktok", "TikTok", cfg["CLUB_TIKTOK"])]
+    return [{"icon": icon, "label": label, "url": url} for icon, label, url in links if url]
+
+
+# --------------------------------------------------------------------------- slideshow
+
+def slideshow():
+    """Pozele din slideshow-ul paginii principale (content/slideshow.yml, editat în Pages CMS)."""
+    items = read_yaml(content_dir() / "slideshow.yml", []) or []
+    if isinstance(items, dict):
+        items = items.get("slides") or []
+    slides = []
+    for item in items:
+        if not isinstance(item, dict) or not content_bool(item.get("activ")):
+            continue
+        image = media_url(item.get("imagine"))
+        title = (item.get("titlu") or "").strip()
+        if not image and not title:
+            continue
+        slides.append({
+            "image": image,
+            "title": title,
+            "eyebrow": (item.get("eticheta") or "").strip(),
+            "text": (item.get("text") or "").strip(),
+            "link": site_link(item.get("link")),
+            "button": (item.get("text_buton") or "").strip() or "Află mai mult",
+        })
+    return slides
+
+
+def site_link(value):
+    """Linkurile scrise de club („/contact/”, „stiri/”) primesc prefixul site-ului; cele externe rămân la fel."""
+    value = str(value or "").strip()
+    if not value or value.startswith(("http://", "https://", "mailto:", "tel:", "#")):
+        return value
+    prefix = settings.SITE_URL_PREFIX
+    path = value if value.startswith("/") else "/" + value
+    if prefix != "/" and path.startswith(prefix):
+        return path
+    return prefix.rstrip("/") + path
+
+
+def content_bool(value):
+    return as_bool(value, default=True)
 
 
 # --------------------------------------------------------------------------- Primul 11

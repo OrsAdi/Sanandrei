@@ -67,6 +67,41 @@ class NewsAndSettingsTests(ContentTestCase):
         self.assertContains(response, 'data-web3form="contact"')
 
 
+class HomeDesignTests(ContentTestCase):
+    def test_slideshow_from_cms(self):
+        self.write("slideshow.yml", yaml.safe_dump([
+            {"imagine": "/media/slides/a.jpg", "titlu": "Victorie!", "eticheta": "Meci", "link": "/meciuri/"},
+            {"imagine": "/media/slides/b.jpg", "activ": False},
+            {"titlu": ""},
+        ]))
+        slides = content.slideshow()
+        self.assertEqual(len(slides), 1, "slide-urile ascunse sau goale nu apar")
+        self.assertEqual(slides[0]["image"], "/media/slides/a.jpg")
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "Victorie!")
+        self.assertContains(response, 'class="slide-img"')
+
+    def test_automatic_slides_and_cards_without_content(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "data-slider")
+        self.assertContains(response, "feature-card", count=2)
+        self.assertContains(response, "<span>Portocaliu</span>")
+
+    def test_site_link_prefix(self):
+        with override_settings(SITE_URL_PREFIX="/Sanandrei/"):
+            self.assertEqual(content.site_link("/contact/"), "/Sanandrei/contact/")
+            self.assertEqual(content.site_link("stiri/"), "/Sanandrei/stiri/")
+            self.assertEqual(content.site_link("/Sanandrei/lot/"), "/Sanandrei/lot/")
+            self.assertEqual(content.site_link("https://facebook.com/x"), "https://facebook.com/x")
+        self.assertEqual(content.site_link("/contact/"), "/contact/")
+
+    def test_social_links_and_motto_from_settings(self):
+        self.write("setari.yml", "facebook: https://facebook.com/club\nmoto: Mândria comunei\n")
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, 'href="https://facebook.com/club"')
+        self.assertContains(response, "<span>Mândria</span>")
+
+
 class PlayersAndLineupTests(ContentTestCase):
     def setUp(self):
         super().setUp()

@@ -1,75 +1,145 @@
 {% extends "base.html" %}
-{% load football %}
+{% load football static ui %}
 {% block title %}Acasă{% endblock %}
 
-{% block hero %}
-<section class="hero">
-  <div class="container">
-    <div>
-      <div class="eyebrow">{{ COMPETITION_NAME }} · {{ SEASON }}</div>
-      <h1>CS <span>Sânandrei</span> Timiș</h1>
-      <p class="hero-lead">Rezultate, clasament, lot și statistici complete pentru echipa noastră și pentru toate cele {{ table|length|default:"16" }} echipe din campionat.</p>
-      {% if our_row %}
-      <div class="hero-stats">
-        <div class="hero-stat"><b>{{ our_row.position }}<small style="font-size:1rem">/{{ table|length }}</small></b><span>Loc</span></div>
-        <div class="hero-stat"><b>{{ our_row.points }}</b><span>Puncte</span></div>
-        <div class="hero-stat"><b>{{ our_row.won }}-{{ our_row.drawn }}-{{ our_row.lost }}</b><span>V-E-I</span></div>
-        <div class="hero-stat"><b>{{ our_row.gf }}:{{ our_row.ga }}</b><span>Golaveraj</span></div>
-      </div>
-      <p class="mt" style="margin-bottom:0">{% form_pills our_row.form True %}</p>
-      {% endif %}
-    </div>
+{% block body_class %}page-home{% endblock %}
 
-    <div>
-      {% if next_match %}
-      <div class="match-card">
-        <div class="label">Următorul meci · Etapa {{ next_match.round }}</div>
-        <div class="meta">{{ next_match.date|date:"l, j F Y · H:i" }} · {{ next_match.venue }}</div>
-        <div class="versus">
-          <div class="team"><img src="{{ next_match.home.logo_url }}" alt=""><div>{{ next_match.home.name }}</div></div>
-          <div class="vs">VS</div>
-          <div class="team"><img src="{{ next_match.away.logo_url }}" alt=""><div>{{ next_match.away.name }}</div></div>
-        </div>
-        {% if next_match.date %}
-        <div class="countdown" data-kickoff="{{ next_match.date|date:'c' }}">
-          <div><b data-d>–</b><span>zile</span></div>
-          <div><b data-h>–</b><span>ore</span></div>
-          <div><b data-m>–</b><span>min</span></div>
-          <div><b data-s>–</b><span>sec</span></div>
-        </div>
-        {% endif %}
-        {% if next_opponent_row %}
-        <p class="small muted center" style="margin:14px 0 0">
-          Adversar: locul {{ next_opponent_row.position }}, {{ next_opponent_row.points }} puncte · formă {% form_pills next_opponent_row.form %}
-        </p>
-        {% endif %}
-        <p class="center" style="margin:16px 0 0"><a class="btn btn-sm" href="{% url 'match_detail' next_match.pk %}">Detalii meci</a>{% if lineup %} <a class="btn btn-sm btn-ghost" href="#primul11">Echipa de start</a>{% endif %}</p>
-      </div>
-      {% elif last_match %}
-      <div class="match-card">
-        <div class="label">Ultimul meci</div>
-        {% include "core/_last_match.html" %}
-      </div>
-      {% else %}
-      <div class="match-card empty"><b>Nu există încă date.</b>Datele de pe frf-ajf.ro apar după prima sincronizare.</div>
+{% block hero %}
+<section class="hero-slider" data-slider aria-roledescription="carousel" aria-label="Noutăți {{ CLUB_SHORT_NAME }}">
+  <div class="slides">
+    {% for s in slides %}
+    <article class="slide{% if forloop.first %} is-active{% endif %}{% if not s.image %} no-photo{% endif %}" data-slide aria-roledescription="slide" aria-label="{{ forloop.counter }} din {{ slides|length }}"{% if not forloop.first %} aria-hidden="true"{% endif %}>
+      {% if s.image %}<img class="slide-img" src="{{ s.image }}" alt="" {% if not forloop.first %}loading="lazy"{% endif %}>{% else %}<img class="slide-logo" src="{% static 'img/logo.jpg' %}" alt="">{% endif %}
+    </article>
+    {% endfor %}
+  </div>
+
+  {# Grafica pe straturi (portocaliu / negru / alb) peste poze #}
+  <div class="hero-layers" aria-hidden="true">
+    <span class="layer layer-black"></span>
+    <span class="layer layer-orange"></span>
+    <span class="layer layer-white"></span>
+    <span class="layer layer-stripes"></span>
+    <span class="layer layer-shade"></span>
+  </div>
+
+  {# Textul slide-urilor (stil fcbarcelona.com: titlu mare subliniat, etichetă și dată) #}
+  <div class="hero-captions">
+    {% for s in slides %}
+    <div class="caption{% if forloop.first %} is-active{% endif %}" data-caption{% if not forloop.first %} aria-hidden="true"{% endif %}>
+      {% if s.title %}
+        {% if s.link %}<a class="caption-title" href="{{ s.link }}"{% if not forloop.first %} tabindex="-1"{% endif %}>{{ s.title }}</a>{% else %}<span class="caption-title">{{ s.title }}</span>{% endif %}
       {% endif %}
+      <div class="caption-meta">
+        {% if s.eyebrow %}<span class="tag">{{ s.eyebrow }}</span>{% endif %}
+        {% if s.text %}<span>{{ s.text }}</span>{% endif %}
+      </div>
     </div>
+    {% endfor %}
+    {% if slides|length > 1 %}
+    <div class="slider-controls">
+      <button type="button" class="slider-arrow" data-prev aria-label="Slide-ul anterior">{% icon "prev" 20 %}</button>
+      <div class="slider-dots" role="tablist">
+        {% for s in slides %}<button type="button" role="tab" class="dot{% if forloop.first %} is-active{% endif %}" data-dot="{{ forloop.counter0 }}" aria-label="Slide {{ forloop.counter }}"{% if forloop.first %} aria-selected="true"{% endif %}><span></span></button>{% endfor %}
+      </div>
+      <button type="button" class="slider-arrow" data-next aria-label="Slide-ul următor">{% icon "next" 20 %}</button>
+    </div>
+    {% endif %}
+  </div>
+
+  {# Rețelele sociale în dreapta (stil juventus.com) #}
+  <div class="social-rail">
+    <span class="rail-label">Urmărește-ne</span>
+    {% include "_social.html" with cls="rail-icons" %}
+  </div>
+</section>
+
+{# Cele două carduri de sub slideshow (stil fcbarcelona.com) #}
+<section class="featured">
+  <div class="featured-cards">
+    {% for c in featured %}
+    <a class="feature-card" href="{{ c.url }}">
+      <div class="feature-img">
+        {% if c.image %}<img src="{{ c.image }}" alt="" loading="lazy">{% else %}<span class="feature-ph">{% icon c.icon|default:"news" 56 %}</span>{% endif %}
+      </div>
+      <div class="feature-body">
+        <h3>{{ c.title }}</h3>
+        <div class="feature-meta"><span class="tag">{{ c.label }}</span>{% if c.date %}<span>{{ c.date|date:"j F Y" }}</span>{% endif %}</div>
+      </div>
+    </a>
+    {% endfor %}
   </div>
 </section>
 {% endblock %}
 
 {% block content %}
 {% if team %}
+{# Următorul meci și ultimul rezultat #}
+<div class="match-strip">
+  {% if next_match %}
+  <div class="match-card">
+    <div class="label">Următorul meci · Etapa {{ next_match.round }}</div>
+    <div class="meta">{% if next_match.date %}{{ next_match.date|date:"l, j F Y · H:i" }} · {% endif %}{{ next_match.venue }}</div>
+    <div class="versus">
+      <div class="team"><img src="{{ next_match.home.logo_url }}" alt=""><div>{{ next_match.home.name }}</div></div>
+      <div class="vs">VS</div>
+      <div class="team"><img src="{{ next_match.away.logo_url }}" alt=""><div>{{ next_match.away.name }}</div></div>
+    </div>
+    {% if next_match.date %}
+    <div class="countdown" data-kickoff="{{ next_match.date|date:'c' }}">
+      <div><b data-d>–</b><span>zile</span></div>
+      <div><b data-h>–</b><span>ore</span></div>
+      <div><b data-m>–</b><span>min</span></div>
+      <div><b data-s>–</b><span>sec</span></div>
+    </div>
+    {% endif %}
+    {% if next_opponent_row %}
+    <p class="small muted center" style="margin:14px 0 0">Adversar: locul {{ next_opponent_row.position }}, {{ next_opponent_row.points }} puncte · formă {% form_pills next_opponent_row.form %}</p>
+    {% endif %}
+    <p class="center" style="margin:16px 0 0"><a class="btn btn-sm" href="{% url 'match_detail' next_match.pk %}">Detalii meci</a>{% if lineup %} <a class="btn btn-sm btn-ghost" href="#primul11">Echipa de start</a>{% endif %}</p>
+  </div>
+  {% endif %}
+  {% if last_match %}
+  <div class="match-card">
+    <div class="label">Ultimul rezultat</div>
+    {% include "core/_last_match.html" %}
+    <p class="center" style="margin:16px 0 0"><a class="btn btn-sm btn-ghost" href="{% url 'match_detail' last_match.pk %}">Raport complet</a></p>
+  </div>
+  {% endif %}
+  {% if our_row and our_row.played %}
+  <div class="match-card standing-card">
+    <div class="label">{{ COMPETITION_NAME }} · {{ SEASON }}</div>
+    <div class="standing-big"><b>{{ our_row.position }}</b><span>/{{ table|length }}</span></div>
+    <div class="standing-row">
+      <div><b>{{ our_row.points }}</b><span>Puncte</span></div>
+      <div><b>{{ our_row.won }}-{{ our_row.drawn }}-{{ our_row.lost }}</b><span>V-E-I</span></div>
+      <div><b>{{ our_row.gf }}:{{ our_row.ga }}</b><span>Goluri</span></div>
+    </div>
+    <p class="center" style="margin:14px 0 0">{% form_pills our_row.form True %}</p>
+    <p class="center" style="margin:16px 0 0"><a class="btn btn-sm btn-ghost" href="{% url 'standings' %}">Clasament</a></p>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{# Mottoul clubului (ca „We are youth since 1897” pe juventus.com) – editabil în Setări site #}
+<section class="motto">
+  <div class="motto-layers" aria-hidden="true"><span></span><span></span><span></span></div>
+  <img class="motto-logo" src="{% static 'img/logo.jpg' %}" alt="" aria-hidden="true">
+  <div class="motto-inner">
+    <div class="motto-text">
+      <div class="eyebrow">{{ CLUB_NAME }}</div>
+      <h2 class="motto-title" style="--chars: {{ CLUB_MOTTO|longest_word }}">{% for w in CLUB_MOTTO|words %}<span>{{ w }}</span> {% endfor %}</h2>
+    </div>
+    <p>{{ CLUB_MOTTO_TEXT }}</p>
+    <p class="motto-actions"><a class="btn" href="{% url 'squad_list' %}">Cunoaște lotul</a> <a class="btn btn-light" href="{% url 'contact' %}">Alătură-te nouă</a></p>
+  </div>
+</section>
+
+{% if team %}
 <div class="grid grid-main mt">
   <div>
     {% if lineup %}{% include "core/_primul11.html" %}{% endif %}
-
-    {% if last_match %}
-    <div class="card">
-      <div class="card-title"><h2>Ultimul rezultat</h2><a href="{% url 'match_detail' last_match.pk %}">Raport complet →</a></div>
-      {% include "core/_last_match.html" %}
-    </div>
-    {% endif %}
 
     <div class="card">
       <div class="card-title"><h2>Rezultate recente</h2><a href="{% url 'fixtures' %}">Toate meciurile →</a></div>

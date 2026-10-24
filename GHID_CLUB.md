@@ -57,12 +57,22 @@ S, M, L…), descriere. Dacă un produs s-a terminat, debifați **În stoc**. Ca
 
 Comenzile ajung pe emailul clubului, cu numele, telefonul clientului și produsele. Plata se face la ridicare.
 
+## Pozele de pe prima pagină (Slideshow)
+
+**Slideshow (prima pagină) → Add an item**: încărcați o **Poză** orizontală (de la meci, antrenament, juniori) și,
+dacă vreți, un **Titlu** (textul mare de pe poză), o **Etichetă** (ex. „Meci”), un **Text scurt** și un **Link**
+(ex. `/stiri/` sau `/meciuri/`). Pozele se schimbă singure la câteva secunde. Ca să scoateți o poză fără să o
+ștergeți, debifați **Afișat**. Cât timp nu există nicio poză, prima pagină arată automat clubul și următorul meci.
+
+Cele două carduri de sub poze sunt ultimele două știri publicate (cu poza lor principală).
+
 ## Sponsori și setări
 
 - **Sponsori**: adăugați numele, logoul și site-ul fiecărui sponsor. Apar în partea de jos a paginii principale,
   în ordinea din listă.
 - **Setări site**: emailul și telefonul afișate pe site, adresa stadionului, textul din subsol, linkurile de
-  Facebook și Instagram.
+  Facebook, Instagram, YouTube și TikTok (apar ca iconițe în dreapta primei pagini) și **mottoul clubului**
+  (textul mare „Portocaliu în suflet” de pe prima pagină, cu textul de sub el).
 
 ## Întrebări frecvente
 

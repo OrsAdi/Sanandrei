@@ -1,0 +1,5 @@
+{% load ui %}{# Linkurile sociale din Setări site + emailul clubului. Variabilă: cls #}
+<div class="{{ cls }}">
+  {% for s in SOCIAL_LINKS %}<a href="{{ s.url }}" target="_blank" rel="noopener" aria-label="{{ s.label }}" title="{{ s.label }}">{% icon s.icon 20 %}</a>{% endfor %}
+  <a href="mailto:{{ CLUB_EMAIL }}" aria-label="Email" title="{{ CLUB_EMAIL }}">{% icon "mail" 20 %}</a>
+</div>

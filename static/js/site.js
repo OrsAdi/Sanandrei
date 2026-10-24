@@ -226,3 +226,89 @@ if (searchForm) {
   searchForm.q.value = new URLSearchParams(window.location.search).get("q") || "";
   run();
 }
+
+// ---------------------------------------------------------------------------
+// Meniul complet (butonul „Meniu” din bara din stânga / de sus)
+// ---------------------------------------------------------------------------
+(() => {
+  const panel = document.getElementById("menu-panel");
+  if (!panel) return;
+  const backdrop = document.querySelector(".menu-backdrop");
+  const openers = document.querySelectorAll("[data-menu-open]");
+  let lastFocus = null;
+  const setOpen = (open) => {
+    panel.hidden = backdrop.hidden = !open;
+    openers.forEach((b) => b.setAttribute("aria-expanded", String(open)));
+    document.body.style.overflow = open ? "hidden" : "";
+    if (open) { lastFocus = document.activeElement; panel.querySelector("a, button").focus(); }
+    else if (lastFocus) lastFocus.focus();
+  };
+  openers.forEach((b) => b.addEventListener("click", () => setOpen(true)));
+  document.querySelectorAll("[data-menu-close]").forEach((b) => b.addEventListener("click", () => setOpen(false)));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !panel.hidden) setOpen(false); });
+  panel.addEventListener("click", (e) => { if (e.target.closest("a")) setOpen(false); });
+})();
+
+// ---------------------------------------------------------------------------
+// Slideshow pe pagina principală
+// ---------------------------------------------------------------------------
+document.querySelectorAll("[data-slider]").forEach((slider) => {
+  const slides = [...slider.querySelectorAll("[data-slide]")];
+  const captions = [...slider.querySelectorAll("[data-caption]")];
+  const dots = [...slider.querySelectorAll("[data-dot]")];
+  if (slides.length < 2) return;
+  const DELAY = 6500;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  slider.style.setProperty("--slide-ms", `${DELAY}ms`);
+  let index = 0, timer = null, paused = false;
+
+  const show = (next) => {
+    index = (next + slides.length) % slides.length;
+    slider.classList.add("is-changing");
+    setTimeout(() => slider.classList.remove("is-changing"), 700);
+    const toggle = (list) => list.forEach((el, i) => {
+      const on = i === index;
+      el.classList.toggle("is-active", on);
+      el.setAttribute("aria-hidden", String(!on));
+      el.querySelectorAll("a").forEach((a) => (on ? a.removeAttribute("tabindex") : a.setAttribute("tabindex", "-1")));
+    });
+    toggle(slides); toggle(captions);
+    dots.forEach((d, i) => {
+      d.classList.remove("is-active");
+      d.setAttribute("aria-selected", String(i === index));
+    });
+    // repornește bara de progres a punctului activ
+    void slider.offsetWidth;
+    dots[index]?.classList.add("is-active");
+    restart();
+  };
+  const restart = () => {
+    clearTimeout(timer);
+    if (!paused && !reduced) timer = setTimeout(() => show(index + 1), DELAY);
+  };
+  const pause = (on) => { paused = on; slider.classList.toggle("is-paused", on); restart(); };
+
+  slider.querySelector("[data-next]")?.addEventListener("click", () => show(index + 1));
+  slider.querySelector("[data-prev]")?.addEventListener("click", () => show(index - 1));
+  dots.forEach((d) => d.addEventListener("click", () => show(+d.dataset.dot)));
+  slider.addEventListener("mouseenter", () => pause(true));
+  slider.addEventListener("mouseleave", () => pause(false));
+  slider.addEventListener("focusin", () => pause(true));
+  slider.addEventListener("focusout", () => pause(false));
+  document.addEventListener("visibilitychange", () => pause(document.hidden));
+  slider.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") show(index + 1);
+    if (e.key === "ArrowLeft") show(index - 1);
+  });
+  // glisare pe telefon
+  let startX = null;
+  slider.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  slider.addEventListener("touchend", (e) => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+    startX = null;
+  });
+  if (reduced) dots[0]?.classList.add("is-active");
+  restart();
+});

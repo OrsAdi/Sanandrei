@@ -7,10 +7,12 @@ from . import content
 
 def club(request):
     last_sync = SyncRun.objects.filter(ok=True).only("finished_at").first()
+    cfg = content.site_settings()
     return {
+        "SOCIAL_LINKS": content.social_links(cfg),
         "CLUB_NAME": settings.CLUB_NAME,
         "CLUB_SHORT_NAME": settings.CLUB_SHORT_NAME,
-        **content.site_settings(),
+        **cfg,
         "WEB3FORMS_KEY": settings.WEB3FORMS_KEY,
         "COMPETITION_NAME": settings.COMPETITION_NAME,
         "SEASON": settings.SEASON,

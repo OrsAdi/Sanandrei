@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
+from django.utils import timezone
 
 from teams import stats
 from teams.models import Match
@@ -9,9 +12,10 @@ from .models import News, Sponsor
 
 def home(request):
     team = stats.our_team()
+    published = list(News.objects.filter(is_published=True)[:5])
     context = {
         "team": team,
-        "news": News.objects.filter(is_published=True)[:3],
+        "news": published[:3],
         "sponsors": Sponsor.objects.all(),
     }
     if team:
@@ -39,7 +43,48 @@ def home(request):
             "next_opponent_row": (next((r for r in table if r.team.pk == next_match.opponent_of(team).pk), None)
                                   if next_match else None),
         })
+    context["slides"] = content.slideshow() or _auto_slides(context, published)
+    context["featured"] = _featured_cards(published)
     return render(request, "core/home.html", context)
+
+
+def _auto_slides(ctx, news):
+    """Slide-uri automate, până când clubul încarcă poze în Pages CMS (Slideshow)."""
+    slides = []
+    nm, row = ctx.get("next_match"), ctx.get("our_row")
+    slides.append({
+        "eyebrow": "Bine ați venit",
+        "title": "CS Sânandrei Timiș",
+        "text": (f"Locul {row.position} în {settings.COMPETITION_NAME} · {row.points} puncte"
+                 if row and row.played else "Fotbal în inima Timișului"),
+        "link": reverse("squad_list"), "button": "Cunoaște lotul", "image": "",
+    })
+    if nm:
+        when = timezone.localtime(nm.date).strftime("%d.%m.%Y, %H:%M") if nm.date else "dată neanunțată"
+        slides.append({
+            "eyebrow": f"Următorul meci · Etapa {nm.round}",
+            "title": f"{nm.home.name} – {nm.away.name}",
+            "text": f"{when} · {nm.venue or 'teren nestabilit'}",
+            "link": nm.get_absolute_url(), "button": "Detalii meci", "image": "",
+        })
+    for item in [n for n in news if n.image][:2]:
+        slides.append({
+            "eyebrow": f"Știri · {timezone.localtime(item.published_at):%d.%m.%Y}",
+            "title": item.title, "text": item.summary,
+            "link": item.get_absolute_url(), "button": "Citește", "image": item.image.url,
+        })
+    return slides
+
+
+def _featured_cards(news):
+    """Cele două carduri de sub slideshow: ultimele știri, completate cu linkuri utile dacă nu sunt destule."""
+    cards = [{"title": n.title, "url": n.get_absolute_url(), "image": n.image.url if n.image else "",
+              "label": "Știri", "date": n.published_at} for n in news[:2]]
+    extras = [
+        {"title": "Program și rezultate", "url": reverse("fixtures"), "label": "Meciuri", "icon": "calendar"},
+        {"title": "Clasamentul ligii", "url": reverse("standings"), "label": "Clasament", "icon": "table"},
+    ]
+    return (cards + extras)[:2]
 
 
 def contact(request):

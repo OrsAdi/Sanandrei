@@ -399,3 +399,254 @@ svg.chart text { font-family: var(--font-body); font-size: 11px; fill: var(--mut
 .form-status.ok { background: #e8f7ee; color: #146c35; }
 .form-status.err { background: #fdecec; color: #a11d1d; }
 .hp { position: absolute !important; left: -9999px !important; }
+
+/* ==========================================================================
+   Layout 2026: bară de navigare în stânga (stil juventus.com), slideshow,
+   carduri de știri (stil fcbarcelona.com), mottoul clubului
+   ========================================================================== */
+:root { --rail: 96px; --ink-3: #0e1014; --bar-h: 64px; }
+html, body { overflow-x: clip; }
+.skip-link { position: absolute; left: -9999px; top: 8px; z-index: 300; background: var(--orange); color: #fff; padding: 8px 14px; border-radius: 8px; }
+.skip-link:focus { left: 8px; }
+.site-main { padding-left: var(--rail); }
+.icon { flex: none; display: block; }
+
+/* --- bara din stânga ------------------------------------------------------- */
+.side-nav {
+  position: fixed; inset: 0 auto 0 0; width: var(--rail); z-index: 120;
+  display: flex; flex-direction: column; align-items: stretch;
+  background: var(--ink-3); color: #fff; border-right: 3px solid var(--orange);
+}
+.side-logo { display: grid; place-items: center; padding: 16px 0 12px; }
+.side-logo img { width: 58px; height: auto; transition: transform .2s; }
+.side-logo:hover img { transform: scale(1.06); }
+.side-menu-btn, .side-links a, .side-shop {
+  display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 4px;
+  color: #c9ccd3; font-family: var(--font-head); font-weight: 700; font-size: .78rem; letter-spacing: 1px;
+  text-transform: uppercase; text-align: center; position: relative;
+}
+.side-menu-btn { background: var(--orange); color: #fff; border: 0; cursor: pointer; margin: 4px 0 8px; padding-block: 14px; }
+.side-menu-btn:hover { background: var(--orange-dark); }
+.side-links { display: flex; flex-direction: column; }
+.side-links a:hover, .side-shop:hover { color: #fff; background: rgba(255,255,255,.06); }
+.side-links a.active, .side-shop.active { color: #fff; }
+.side-links a.active::before, .side-shop.active::before {
+  content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 4px; background: var(--orange); border-radius: 0 4px 4px 0;
+}
+.side-shop { margin-top: auto; border-top: 1px solid rgba(255,255,255,.08); padding-block: 16px; }
+.side-shop .badge-count { position: absolute; top: 8px; right: 22px; margin: 0; }
+
+/* --- bara de sus pe telefon ------------------------------------------------ */
+.mobile-bar { display: none; }
+.mobile-brand { display: flex; align-items: center; gap: 10px; color: #fff; }
+.mobile-brand img { height: 44px; width: auto; }
+.mobile-brand strong { display: block; font-family: var(--font-head); font-size: 1.25rem; text-transform: uppercase; line-height: 1; }
+.mobile-brand small { display: block; font-family: var(--font-head); color: var(--orange); letter-spacing: 1.2px; text-transform: uppercase; font-size: .78rem; }
+.mobile-brand:hover { color: #fff; }
+
+/* --- meniul complet -------------------------------------------------------- */
+.menu-backdrop { position: fixed; inset: 0; background: rgba(8,9,12,.6); z-index: 140; backdrop-filter: blur(2px); }
+.menu-panel {
+  position: fixed; inset: 0 auto 0 0; width: min(520px, 100%); z-index: 150; overflow-y: auto;
+  background: var(--ink-3); color: #fff; padding: 22px 34px 30px; display: flex; flex-direction: column; gap: 28px;
+  border-right: 3px solid var(--orange); animation: menu-in .28s ease-out;
+}
+.menu-panel[hidden], .menu-backdrop[hidden] { display: none; }
+@keyframes menu-in { from { transform: translateX(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.menu-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.menu-close { background: none; border: 2px solid rgba(255,255,255,.2); color: #fff; border-radius: 50%; width: 48px; height: 48px; display: grid; place-items: center; cursor: pointer; }
+.menu-close:hover { border-color: var(--orange); color: var(--orange); }
+.menu-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.menu-groups h4 { color: var(--orange); font-size: .95rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+.menu-groups a {
+  display: block; font-family: var(--font-head); font-weight: 800; text-transform: uppercase; font-size: 1.7rem;
+  line-height: 1.05; padding: 6px 0; color: #fff; transition: color .15s, transform .15s;
+}
+.menu-groups a:hover { color: var(--orange); transform: translateX(6px); }
+.menu-foot { margin-top: auto; border-top: 1px solid rgba(255,255,255,.1); padding-top: 18px; color: #aeb3bd; }
+.menu-foot a { color: #fff; }
+.social-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 10px; }
+.social-row a {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  border: 1.5px solid rgba(255,255,255,.25); color: #fff;
+}
+.social-row a:hover { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+/* --- slideshow ------------------------------------------------------------- */
+.hero-slider {
+  position: relative; min-height: max(620px, 100vh); min-height: max(620px, 100svh);
+  background: var(--ink-3); color: #fff; overflow: hidden; isolation: isolate;
+}
+.slides, .slide { position: absolute; inset: 0; }
+.slide { opacity: 0; transition: opacity 1.1s ease; }
+.slide.is-active { opacity: 1; }
+.slide-img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); }
+.slide.is-active .slide-img { animation: kenburns 9s ease-out forwards; }
+@keyframes kenburns { from { transform: scale(1.12); } to { transform: scale(1); } }
+.slide.no-photo { background: radial-gradient(circle at 70% 35%, #2b2f38 0%, var(--ink-3) 62%); }
+.slide.no-photo:nth-child(2n) { background: radial-gradient(circle at 30% 30%, #3a2416 0%, var(--ink-3) 60%); }
+.slide-logo {
+  position: absolute; right: 9%; top: 50%; width: min(46vh, 34vw); height: auto; transform: translateY(-58%) rotate(-8deg);
+  opacity: .16; filter: grayscale(.2);
+}
+.slide.is-active .slide-logo { animation: logo-in 1.4s ease-out; }
+@keyframes logo-in { from { transform: translateY(-50%) rotate(-14deg) scale(.9); opacity: 0; } }
+
+/* straturi grafice */
+.hero-layers { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.layer { position: absolute; inset: 0; transition: transform 1.2s cubic-bezier(.2,.7,.2,1); }
+.layer-black { background: rgba(10,11,14,.78); clip-path: polygon(0 0, 34% 0, 18% 100%, 0 100%); }
+.layer-orange { background: var(--orange); opacity: .92; clip-path: polygon(34% 0, 38.5% 0, 22.5% 100%, 18% 100%); }
+.layer-white { background: #fff; opacity: .9; clip-path: polygon(40.2% 0, 41.2% 0, 25.2% 100%, 24.2% 100%); }
+.layer-stripes {
+  opacity: .22; clip-path: polygon(70% 0, 100% 0, 100% 100%, 54% 100%);
+  background: repeating-linear-gradient(115deg, transparent 0 22px, rgba(242,106,27,.9) 22px 26px, transparent 26px 48px);
+}
+.layer-shade { background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, transparent 28%, transparent 45%, rgba(10,11,14,.92) 100%); }
+.hero-slider.is-changing .layer-orange { transform: translateX(-2.5%); }
+.hero-slider.is-changing .layer-white { transform: translateX(2%); }
+.hero-slider.is-changing .layer-black { transform: translateX(-1.5%); }
+
+/* textul slide-urilor */
+.hero-captions {
+  position: absolute; left: 0; right: 0; bottom: 210px; z-index: 2; text-align: center; padding: 0 110px;
+  display: grid; justify-items: center;
+}
+.caption { grid-area: 1 / 1; opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; visibility: hidden; }
+.caption.is-active { opacity: 1; transform: none; visibility: visible; transition-delay: .25s; }
+.caption-title {
+  display: inline; font-family: var(--font-head); font-weight: 800; text-transform: uppercase; color: #fff;
+  font-size: clamp(2.4rem, 6.2vw, 5.6rem); line-height: .98; letter-spacing: .5px;
+  text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: 12px;
+  text-wrap: balance; text-shadow: 0 4px 30px rgba(0,0,0,.35);
+}
+a.caption-title:hover { color: #fff; text-decoration-color: var(--orange); }
+.caption-meta { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 26px; font-size: .95rem; color: #e6e7ea; }
+.tag { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-head); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); }
+.tag::before { content: ""; width: 9px; height: 9px; background: var(--orange); }
+.slider-controls { display: flex; align-items: center; gap: 14px; margin-top: 26px; }
+.slider-arrow {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.3); color: #fff;
+}
+.slider-arrow:hover { background: var(--orange); border-color: var(--orange); }
+.slider-dots { display: flex; gap: 8px; }
+.dot { width: 44px; height: 4px; padding: 10px 0; background: none; border: 0; cursor: pointer; position: relative; }
+.dot::before, .dot span { content: ""; position: absolute; left: 0; top: 10px; height: 4px; border-radius: 4px; }
+.dot::before { right: 0; background: rgba(255,255,255,.3); }
+.dot span { width: 0; background: var(--orange); }
+.dot.is-active span { width: 100%; transition: width var(--slide-ms, 6500ms) linear; }
+.hero-slider.is-paused .dot.is-active span { transition: none; }
+
+/* rețele sociale în dreapta */
+.social-rail {
+  position: absolute; right: 26px; top: 50%; transform: translateY(-50%); z-index: 3;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.social-rail::before { content: ""; width: 2px; height: 70px; background: linear-gradient(transparent, rgba(255,255,255,.6)); }
+.rail-label { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--font-head); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; font-size: .82rem; color: #fff; opacity: .85; }
+.rail-icons { display: flex; flex-direction: column; gap: 10px; }
+.rail-icons a {
+  width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; color: #fff;
+  background: rgba(10,11,14,.45); border: 1.5px solid rgba(255,255,255,.35); backdrop-filter: blur(4px);
+  transition: background .15s, transform .15s;
+}
+.rail-icons a:hover { background: var(--orange); border-color: var(--orange); color: #fff; transform: scale(1.08); }
+
+/* --- cardurile de sub slideshow (stil fcbarcelona.com) --------------------- */
+.featured {
+  position: relative; z-index: 5; margin-top: -170px;
+  background: linear-gradient(180deg, transparent 0, transparent 170px, var(--ink-3) 170px, var(--ink-3) 62%, var(--orange-dark) 62%, var(--orange) 100%);
+  padding: 0 20px 44px;
+}
+.featured-cards { display: flex; justify-content: center; gap: 8px; }
+.feature-card { width: 300px; background: #1b1e26; color: #fff; display: flex; flex-direction: column; box-shadow: 0 18px 40px rgba(0,0,0,.35); transition: transform .2s; }
+.feature-card:hover { color: #fff; transform: translateY(-6px); }
+.feature-img { aspect-ratio: 16 / 9; overflow: hidden; background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 55%, #1b1e26 55.5%); position: relative; }
+.feature-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.feature-card:hover .feature-img img { transform: scale(1.06); }
+.feature-ph { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; }
+.feature-body { padding: 22px 20px 18px; text-align: center; display: flex; flex-direction: column; flex: 1; min-height: 150px; }
+.feature-body h3 { font-family: var(--font-body); font-weight: 800; font-size: 1.12rem; line-height: 1.35; margin: 0 0 18px; }
+.feature-meta { margin-top: auto; display: flex; justify-content: center; gap: 12px; font-size: .78rem; color: #c3c6cd; flex-wrap: wrap; }
+.feature-meta .tag { font-size: .78rem; }
+
+/* --- următorul meci / ultimul rezultat / clasament ------------------------- */
+.match-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 32px; }
+.match-strip .match-card { box-shadow: var(--shadow); border-top: 4px solid var(--orange); }
+.standing-big { text-align: center; font-family: var(--font-head); margin: 10px 0 6px; }
+.standing-big b { font-size: 5rem; line-height: 1; color: var(--ink); }
+.standing-big span { font-size: 1.6rem; color: var(--muted); font-weight: 700; }
+.standing-row { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; gap: 8px; }
+.standing-row b { display: block; font-family: var(--font-head); font-size: 1.6rem; }
+.standing-row span { font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+/* --- mottoul clubului ------------------------------------------------------ */
+.motto {
+  position: relative; overflow: hidden; isolation: isolate; color: #fff; background: var(--ink-3);
+  width: calc(100vw - var(--rail)); margin: 56px 0 8px calc(50% - (100vw - var(--rail)) / 2);
+  padding: clamp(56px, 9vw, 120px) 20px;
+}
+.motto-layers span { position: absolute; inset: 0; z-index: -1; }
+.motto-layers span:nth-child(1) { background: var(--orange); clip-path: polygon(62% 0, 100% 0, 100% 100%, 46% 100%); }
+.motto-layers span:nth-child(2) { background: #fff; clip-path: polygon(59.5% 0, 60.6% 0, 44.6% 100%, 43.5% 100%); opacity: .9; }
+.motto-layers span:nth-child(3) { background: repeating-linear-gradient(115deg, transparent 0 22px, rgba(255,255,255,.14) 22px 25px, transparent 25px 46px); clip-path: polygon(0 0, 30% 0, 14% 100%, 0 100%); }
+.motto-logo { position: absolute; right: 6%; top: 50%; width: min(380px, 34vw); transform: translateY(-50%) rotate(-8deg); opacity: .22; z-index: -1; }
+.motto-inner { max-width: 1100px; margin: 0 auto; padding-right: 42%; }
+.motto-text { container-type: inline-size; }
+/* mărimea se potrivește după cel mai lung cuvânt (--chars), ca niciun cuvânt să nu se rupă */
+.motto-title {
+  font-size: min(6.6rem, 13vw, calc(100cqi / (var(--chars, 10) * .7))); line-height: .92; margin: 10px 0 24px;
+  text-transform: uppercase; font-weight: 800; letter-spacing: .5px; overflow-wrap: break-word;
+}
+.motto-title span { display: inline-block; max-width: 100%; }
+.motto-title span:nth-child(odd) { color: #fff; }
+.motto-title span:nth-child(even) { color: transparent; -webkit-text-stroke: 2px #fff; }
+.motto-title span:first-child { color: var(--orange); }
+.motto p { max-width: 560px; font-size: 1.08rem; color: #d7d9de; margin: 0 0 12px; }
+.motto-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px !important; }
+.btn-light { background: #fff; color: var(--ink); }
+.btn-light:hover { background: var(--ink); color: #fff; }
+
+/* --- telefon / tabletă ----------------------------------------------------- */
+@media (max-width: 960px) {
+  :root { --rail: 0px; }
+  .side-nav { display: none; }
+  .mobile-bar {
+    display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 120; height: var(--bar-h);
+    padding: 0 12px 0 16px; background: var(--ink-3); border-bottom: 3px solid var(--orange);
+  }
+  .mobile-cart { margin-left: auto; color: #fff; position: relative; padding: 8px; }
+  .mobile-cart .badge-count { position: absolute; top: 0; right: -4px; margin: 0; }
+  .mobile-menu-btn { background: var(--orange); border: 0; color: #fff; width: 46px; height: 46px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; }
+  .hero-slider { min-height: max(560px, calc(100svh - var(--bar-h))); }
+  .hero-captions { padding: 0 18px; bottom: 190px; }
+  .caption-title { text-underline-offset: 8px; text-decoration-thickness: 3px; }
+  .social-rail { top: auto; bottom: auto; right: 12px; top: 26px; transform: none; }
+  .social-rail::before, .rail-label { display: none; }
+  .rail-icons a { width: 38px; height: 38px; }
+  .layer-black { clip-path: polygon(0 0, 46% 0, 24% 100%, 0 100%); }
+  .layer-orange { clip-path: polygon(46% 0, 53% 0, 31% 100%, 24% 100%); }
+  .layer-white { clip-path: polygon(55.5% 0, 57% 0, 35% 100%, 33.5% 100%); }
+  .slide-logo { right: 50%; transform: translate(50%, -70%) rotate(-8deg); width: 62vw; }
+  .slide.is-active .slide-logo { animation: none; }
+  .menu-groups a { font-size: 1.45rem; }
+  .motto-inner { padding-right: 30%; }
+}
+@media (max-width: 680px) {
+  .featured { margin-top: -150px; background: linear-gradient(180deg, transparent 0, transparent 150px, var(--ink-3) 150px, var(--ink-3) 80%, var(--orange) 100%); }
+  .featured-cards { flex-direction: column; align-items: center; gap: 14px; }
+  .feature-card { width: 100%; max-width: 420px; }
+  .feature-body { min-height: 0; }
+  .hero-captions { bottom: 175px; }
+  .menu-panel { padding: 18px 20px 24px; }
+  .menu-groups { grid-template-columns: 1fr; gap: 18px; }
+  .motto-logo { width: 60vw; right: -12%; opacity: .14; }
+  .motto-inner { padding-right: 18%; }
+  .motto-layers span:nth-child(1) { clip-path: polygon(96% 0, 100% 0, 100% 100%, 88% 100%); }
+  .motto-layers span:nth-child(2) { clip-path: polygon(93.5% 0, 94.5% 0, 86.5% 100%, 85.5% 100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide, .caption, .layer, .slide-img { transition: none !important; animation: none !important; }
+  .dot.is-active span { transition: none; }
+}

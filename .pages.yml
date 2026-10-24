@@ -345,6 +345,38 @@ content:
         options:
           format: markdown
 
+  - name: slideshow
+    label: Slideshow (prima pagină)
+    type: file
+    path: content/slideshow.yml
+    format: yaml
+    list: true
+    fields:
+      - name: imagine
+        label: Poză
+        type: image
+        required: true
+        description: Poză orizontală (de preferat de la meci sau antrenament). Se taie automat pe ecran.
+      - name: titlu
+        label: Titlu
+        type: string
+        description: Textul mare de pe poză (opțional), ex. „Victorie cu Belinț!”
+      - name: eticheta
+        label: Etichetă
+        type: string
+        description: Textul mic portocaliu, ex. „Meci”, „Juniori”, „Club”.
+      - name: text
+        label: Text scurt
+        type: string
+      - name: link
+        label: Link
+        type: string
+        description: Pagina deschisă la click pe titlu, ex. /stiri/ sau /meciuri/ (opțional).
+      - name: activ
+        label: Afișat
+        type: boolean
+        default: true
+
   - name: sponsori
     label: Sponsori
     type: file
@@ -388,3 +420,16 @@ content:
       - name: instagram
         label: Link Instagram
         type: string
+      - name: youtube
+        label: Link YouTube
+        type: string
+      - name: tiktok
+        label: Link TikTok
+        type: string
+      - name: moto
+        label: Mottoul clubului
+        type: string
+        description: Textul mare de pe prima pagină, ex. „Portocaliu în suflet”.
+      - name: moto_text
+        label: Text sub motto
+        type: text
