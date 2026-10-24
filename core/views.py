@@ -43,6 +43,8 @@ def home(request):
             "next_opponent_row": (next((r for r in table if r.team.pk == next_match.opponent_of(team).pk), None)
                                   if next_match else None),
         })
+    if team:
+        context["xi"] = _player_cards(team, context.get("lineup"))
     context["slides"] = content.slideshow() or _auto_slides(context, published)
     context["featured"] = _featured_cards(published)
     return render(request, "core/home.html", context)
@@ -74,6 +76,35 @@ def _auto_slides(ctx, news):
             "link": item.get_absolute_url(), "button": "Citește", "image": item.image.url,
         })
     return slides
+
+
+ROLE_LABEL = {"portar": "Portar", "fundasi": "Fundaș", "mijlocasi": "Mijlocaș",
+              "mijlocasi_ofensivi": "Mijlocaș ofensiv", "atacanti": "Atacant"}
+
+
+def _player_cards(team, lineup):
+    """
+    Cardurile de jucători de pe prima pagină (stil fcbarcelona.com).
+    Cu echipa de start anunțată: cei 11, de la portar la atacanți. Altfel: jucătorii folosiți în sezon.
+    """
+    if lineup:
+        order = [(p, ROLE_LABEL.get(row["key"], "")) for row in reversed(lineup["rows"]) for p in row["players"]]
+        by_id = {p.pk: p for p in stats.player_stats(team=team, players=[p for p, _ in order])}
+        players = [(by_id[p.pk], role) for p, role in order if p.pk in by_id]
+        title, subtitle = "Echipa de start", f"Formația {lineup['formation']}"
+    else:
+        used = [p for p in stats.player_stats(team=team) if p.apps and p.team_id == team.pk]
+        used.sort(key=lambda p: (-p.minutes, p.name))
+        players = [(p, p.position) for p in used]
+        title, subtitle = "Jucătorii noștri", f"{len(players)} jucători folosiți în acest sezon"
+    if not players:
+        return None
+    return {
+        "title": title, "subtitle": subtitle, "is_lineup": bool(lineup),
+        "cards": [{"player": p, "role": role} for p, role in players],
+        "bench": lineup["bench"] if lineup else [],
+        "coach": lineup["coach"] if lineup else "",
+    }
 
 
 def _featured_cards(news):

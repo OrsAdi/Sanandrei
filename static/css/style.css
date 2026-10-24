@@ -652,3 +652,98 @@ a.caption-title:hover { color: #fff; text-decoration-color: var(--orange); }
   .slide, .caption, .layer, .slide-img { transition: none !important; animation: none !important; }
   .dot.is-active span { transition: none; }
 }
+
+/* --- carduri de jucători / primul 11 (stil fcbarcelona.com) ---------------- */
+.players-band {
+  position: relative; overflow: hidden; color: #fff; isolation: isolate;
+  width: calc(100vw - var(--rail)); margin: 56px 0 0 calc(50% - (100vw - var(--rail)) / 2);
+  padding: 48px 0 40px;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(242,106,27,.35), transparent 45%),
+    linear-gradient(180deg, #14161c 0%, var(--ink-3) 100%);
+}
+.players-band::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: .12;
+  background: repeating-linear-gradient(115deg, transparent 0 26px, var(--orange) 26px 28px, transparent 28px 52px);
+  clip-path: polygon(0 0, 22% 0, 10% 100%, 0 100%);
+}
+.players-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; max-width: 1200px; margin: 0 auto 22px; padding: 0 20px; }
+.players-head h2 { font-size: clamp(2rem, 4vw, 3rem); margin: 4px 0 2px; color: #fff; }
+.players-head p { margin: 0; color: #b9bdc6; }
+.players-arrows { display: flex; gap: 10px; }
+.players-arrows .slider-arrow { width: 46px; height: 46px; }
+.players-arrows .slider-arrow:disabled { opacity: .35; cursor: default; background: transparent; border-color: rgba(255,255,255,.3); }
+
+.players-track {
+  --track-pad: max(20px, calc((100vw - var(--rail) - 1160px) / 2));
+  display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  padding: 4px var(--track-pad) 18px; scroll-padding-inline: var(--track-pad); scrollbar-width: none; outline: none;
+}
+.players-track::-webkit-scrollbar { display: none; }
+.player-tile {
+  position: relative; flex: 0 0 300px; height: 420px; overflow: hidden; scroll-snap-align: start; color: #fff;
+  background: #111;
+}
+.player-tile:hover, .player-tile:focus-visible { color: #fff; }
+.player-tile:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+.tile-photo {
+  position: absolute; inset: 0;
+  background: linear-gradient(165deg, var(--orange) 0%, #b84a0e 38%, #3a1606 78%, #120804 100%);
+}
+.player-tile.gk .tile-photo { background: linear-gradient(165deg, #4a505c 0%, #2a2e37 45%, #101216 100%); }
+.tile-photo img:not(.tile-crest) { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform .5s ease, filter .4s; }
+.tile-shirt { position: absolute; left: 50%; top: 9%; width: 74%; transform: translateX(-50%); transition: transform .5s ease; overflow: visible; }
+.tile-shirt .shirt-body { fill: rgba(0,0,0,.22); stroke: rgba(255,255,255,.22); stroke-width: 2; stroke-linejoin: round; }
+.tile-shirt .shirt-collar { fill: none; stroke: rgba(255,255,255,.35); stroke-width: 3; }
+.tile-shirt text { font-family: var(--font-head); font-weight: 800; font-size: 70px; fill: rgba(255,255,255,.9); }
+.player-tile.no-photo .tile-number { display: none; }
+.tile-crest { position: absolute; top: 18px; right: 18px; width: 54px; opacity: .55; }
+.tile-photo::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(8,9,12,.55) 62%, rgba(8,9,12,.95) 100%);
+  transition: background .4s;
+}
+.tile-number {
+  position: absolute; left: 0; right: 0; top: 47%; transform: translateY(-50%); text-align: center; pointer-events: none;
+  font-family: var(--font-head); font-weight: 800; font-size: 9rem; line-height: 1;
+  color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.28); transition: top .4s ease, opacity .4s;
+}
+.tile-info { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 18px 20px; text-align: center; }
+.tile-info h3 {
+  font-family: var(--font-head); font-weight: 800; text-transform: uppercase; font-size: 2rem; line-height: .95;
+  margin: 0 0 6px; text-wrap: balance; text-shadow: 0 2px 14px rgba(0,0,0,.4);
+}
+.tile-role { font-weight: 700; font-size: .85rem; color: #e9eaee; }
+.tile-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 0; max-height: 0; opacity: 0; overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0); transition: max-height .45s ease, opacity .35s ease, margin .45s ease, padding .45s ease, border-color .45s;
+}
+.tile-stats div { display: flex; flex-direction: column; align-items: center; }
+.tile-stats span { font-family: var(--font-head); font-weight: 800; text-transform: uppercase; font-size: .78rem; letter-spacing: .5px; }
+.tile-stats b { font-family: var(--font-head); font-weight: 800; font-size: 2rem; line-height: 1.05; }
+.tile-stats small { font-size: .72rem; color: var(--orange); font-weight: 700; white-space: nowrap; }
+
+/* hover: poza se întunecă, statisticile urcă */
+.player-tile:hover .tile-photo img:not(.tile-crest), .player-tile:focus-visible .tile-photo img:not(.tile-crest) { transform: scale(1.06); }
+.player-tile:hover .tile-shirt, .player-tile:focus-visible .tile-shirt { transform: translateX(-50%) translateY(-6%) scale(.92); }
+.player-tile:hover .tile-photo::after, .player-tile:focus-visible .tile-photo::after {
+  background: linear-gradient(180deg, rgba(8,9,12,.1) 0%, rgba(8,9,12,.6) 45%, rgba(8,9,12,.97) 100%);
+}
+.player-tile:hover .tile-number, .player-tile:focus-visible .tile-number { top: 36%; }
+.player-tile:hover .tile-stats, .player-tile:focus-visible .tile-stats {
+  max-height: 120px; opacity: 1; margin-top: 16px; padding-top: 14px; border-top-color: rgba(255,255,255,.3);
+}
+/* telefon / tabletă fără mouse: statisticile se văd mereu */
+@media (hover: none) {
+  .tile-stats { max-height: 120px; opacity: 1; margin-top: 16px; padding-top: 14px; border-top-color: rgba(255,255,255,.3); }
+  .tile-number { top: 36%; }
+}
+.players-foot { max-width: 1200px; margin: 10px auto 0; padding: 0 20px; color: #c7cad1; font-size: .92rem; display: flex; gap: 8px 22px; flex-wrap: wrap; }
+.players-foot a { color: #fff; }
+.players-foot a:hover { color: var(--orange); }
+.players-band + .motto { margin-top: 0; }
+@media (max-width: 680px) {
+  .players-head { align-items: flex-start; flex-direction: column; }
+  .players-arrows { display: none; }
+  .player-tile { flex-basis: 78vw; height: 400px; }
+}

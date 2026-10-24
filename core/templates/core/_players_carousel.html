@@ -1,0 +1,48 @@
+{% load static ui %}
+{# Carduri de jucători (stil fcbarcelona.com). Variabilă: xi #}
+<section class="players-band" id="primul11" aria-labelledby="players-title">
+  <div class="players-head">
+    <div>
+      <div class="eyebrow">{% if xi.is_lineup and next_match %}Etapa {{ next_match.round }} · {{ next_match.home.name }} – {{ next_match.away.name }}{% else %}{{ COMPETITION_NAME }} · {{ SEASON }}{% endif %}</div>
+      <h2 id="players-title">{{ xi.title }}</h2>
+      <p>{{ xi.subtitle }}</p>
+    </div>
+    <div class="players-arrows">
+      <button type="button" class="slider-arrow" data-players-prev aria-label="Jucătorii anteriori">{% icon "prev" 20 %}</button>
+      <button type="button" class="slider-arrow" data-players-next aria-label="Jucătorii următori">{% icon "next" 20 %}</button>
+    </div>
+  </div>
+
+  <div class="players-track" data-players-track tabindex="0" aria-label="Lista jucătorilor">
+    {% for c in xi.cards %}{% with p=c.player %}
+    <a class="player-tile{% if c.role == 'Portar' %} gk{% endif %}{% if not p.picture %} no-photo{% endif %}" href="{{ p.get_absolute_url }}">
+      <div class="tile-photo">
+        {% if p.picture %}<img src="{{ p.picture }}" alt="" loading="lazy">{% else %}
+        <svg class="tile-shirt" viewBox="0 0 200 200" aria-hidden="true">
+          <path class="shirt-body" d="M72 18 40 30 8 68l26 26 18-14v104h96V80l18 14 26-26-32-38-32-12c-6 14-16 22-28 22s-22-8-28-22Z"/>
+          <path class="shirt-collar" d="M72 18c6 14 16 22 28 22s22-8 28-22"/>
+          {% if p.number %}<text x="100" y="142" text-anchor="middle">{{ p.number }}</text>{% endif %}
+        </svg>
+        <img class="tile-crest" src="{% static 'img/logo.jpg' %}" alt="">{% endif %}
+      </div>
+      <span class="tile-number" aria-hidden="true">{{ p.number|default:"" }}</span>
+      <div class="tile-info">
+        <h3>{{ p.name }}</h3>
+        <span class="tile-role">{{ c.role|default:"Jucător" }}</span>
+        <div class="tile-stats">
+          <div><span>Meciuri</span><b>{{ p.apps|default:0 }}</b><small>{{ p.starts|default:0 }} titular</small></div>
+          <div><span>Goluri</span><b>{{ p.goals }}</b><small>{% if p.minutes_per_goal %}1 la {{ p.minutes_per_goal }}'{% else %}–{% endif %}</small></div>
+          <div><span>Minute</span><b>{{ p.minutes }}</b><small>🟨 {{ p.yellows }} · 🟥 {{ p.reds }}</small></div>
+        </div>
+      </div>
+    </a>
+    {% endwith %}{% endfor %}
+  </div>
+
+  {% if xi.bench or xi.coach %}
+  <p class="players-foot">
+    {% if xi.bench %}<b>Rezerve:</b> {% for p in xi.bench %}<a href="{{ p.get_absolute_url }}">{% if p.number %}{{ p.number }}. {% endif %}{{ p.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}{% endif %}
+    {% if xi.coach %}<span><b>Antrenor:</b> {{ xi.coach }}</span>{% endif %}
+  </p>
+  {% endif %}
+</section>

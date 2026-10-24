@@ -34,8 +34,9 @@ Ca să ascundeți o știre fără să o ștergeți, debifați **Publicat** și s
 
 În aproximativ 2 minute echipa apare desenată pe teren:
 
-- pe **pagina principală**, primul chenar de sub banda neagră de sus (și butonul **Echipa de start** din chenarul
-  „Următorul meci” duce direct la ea);
+- pe **pagina principală**, ca un șir de carduri mari cu jucătorii (de la portar la atacanți); când duceți mouse-ul
+  pe un card apar statisticile jucătorului din sezon (meciuri, goluri, minute, cartonașe). Butonul
+  **Echipa de start** din chenarul „Următorul meci” duce direct la ele;
 - pe **pagina meciului** (butonul **Detalii meci**).
 
 După ce meciul s-a jucat, echipa dispare automat. Pentru meciul următor schimbați doar meciul și jucătorii.
@@ -47,7 +48,11 @@ Dacă un jucător apare pe alt post decât vreți, verificați ordinea în care 
 în aceeași zi). Pentru fiecare puteți completa **Numărul pe tricou**, **Postul**, o **Poză** și o scurtă
 **descriere**. Numele nu se poate modifica aici, el vine de pe FRF.
 
-Postul decide în ce grupă apare jucătorul pe pagina „Lot” (Portari, Fundași, Mijlocași, Atacanți).
+Postul decide în ce grupă apare jucătorul pe pagina „Lot” (Portari, Fundași, Mijlocași, Atacanți). **Poza** apare
+pe cardul jucătorului de pe prima pagină; cel mai bine arată o poză portret, cu jucătorul de la brâu în sus, pe un
+fundal simplu. Fără poză, cardul arată un tricou cu numărul jucătorului.
+
+Când nu este anunțată nicio echipă de start, pe prima pagină apar toți jucătorii folosiți în sezon.
 
 ## Magazin
 

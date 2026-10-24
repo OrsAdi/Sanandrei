@@ -124,6 +124,8 @@
 </div>
 {% endif %}
 
+{% if xi %}{% include "core/_players_carousel.html" %}{% endif %}
+
 {# Mottoul clubului (ca „We are youth since 1897” pe juventus.com) – editabil în Setări site #}
 <section class="motto">
   <div class="motto-layers" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -141,7 +143,6 @@
 {% if team %}
 <div class="grid grid-main mt">
   <div>
-    {% if lineup %}{% include "core/_primul11.html" %}{% endif %}
 
     <div class="card">
       <div class="card-title"><h2>Rezultate recente</h2><a href="{% url 'fixtures' %}">Toate meciurile →</a></div>

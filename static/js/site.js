@@ -312,3 +312,31 @@ document.querySelectorAll("[data-slider]").forEach((slider) => {
   if (reduced) dots[0]?.classList.add("is-active");
   restart();
 });
+
+// ---------------------------------------------------------------------------
+// Caruselul cu jucători (prima pagină)
+// ---------------------------------------------------------------------------
+document.querySelectorAll("[data-players-track]").forEach((track) => {
+  const band = track.closest(".players-band");
+  const prev = band.querySelector("[data-players-prev]");
+  const next = band.querySelector("[data-players-next]");
+  const step = () => {
+    const tile = track.querySelector(".player-tile");
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 10;
+    const perView = Math.max(1, Math.floor(track.clientWidth / (tile.offsetWidth + gap)) - 1);
+    return (tile.offsetWidth + gap) * perView;
+  };
+  const update = () => {
+    prev.disabled = track.scrollLeft < 5;
+    next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 5;
+  };
+  prev.addEventListener("click", () => track.scrollBy({ left: -step() }));
+  next.addEventListener("click", () => track.scrollBy({ left: step() }));
+  track.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+  track.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") { e.preventDefault(); track.scrollBy({ left: step() }); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); track.scrollBy({ left: -step() }); }
+  });
+  window.addEventListener("resize", update);
+  update();
+});

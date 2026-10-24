@@ -203,6 +203,22 @@ class PlayersAndLineupTests(ContentTestCase):
                                                    "titulari": ["1", "2", "3", "4", "5", "6"]}))
         self.assertEqual(content.lineup_for_round(7)["formation"], "4-1")
 
+    def test_home_player_cards_follow_lineup(self):
+        self.write("primul11.yml", yaml.safe_dump({
+            "meci": "7", "formatie": "4-3-3", "titulari": [str(i) for i in range(1, 12)], "rezerve": ["12"]}))
+        html = self.client.get(reverse("home")).content.decode()
+        self.assertIn("Echipa de start", html)
+        self.assertEqual(html.count('class="player-tile'), 11)
+        first = html.index('class="player-tile')
+        self.assertIn("Portar", html[first:first + 2500], "portarul e primul card")
+        self.assertIn("tile-stats", html)
+        self.assertIn("Rezerva Acasa", html[html.index("players-foot"):])
+
+    def test_home_player_cards_without_lineup_show_squad(self):
+        html = self.client.get(reverse("home")).content.decode()
+        self.assertIn("Jucătorii noștri", html)
+        self.assertEqual(html.count('class="player-tile'), 12, "titularii + rezerva folosită")
+
     def test_unpublished_lineup_hidden(self):
         self.write("primul11.yml", "publicat: false\netapa: 7\nportar: '1'\n")
         self.assertIsNone(content.lineup_for_round(7))
