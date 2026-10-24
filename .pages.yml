@@ -72,12 +72,12 @@ content:
         options:
           placeholder: Alegeți meciul
           values:
-            - { name: "10", label: "Etapa 10 · CSC Belinț – CS Sânandrei Timiș · sâm 24.10, 16:00" }
             - { name: "11", label: "Etapa 11 · CS Sânandrei Timiș – Club Sportiv Giroc-Chisoda · dată neanunțată" }
             - { name: "12", label: "Etapa 12 · CS Unirea Sânnicolau Mare – CS Sânandrei Timiș · dată neanunțată" }
             - { name: "13", label: "Etapa 13 · CS Sânandrei Timiș – CSM Lugoj · dată neanunțată" }
             - { name: "14", label: "Etapa 14 · CSC Ghiroda și Giarmata Vii – CS Sânandrei Timiș · dată neanunțată" }
             - { name: "15", label: "Etapa 15 · CS Sânandrei Timiș – CS Flacăra Parța · dată neanunțată" }
+            - { name: "16", label: "Etapa 16 · CS Avântul Periam – CS Sânandrei Timiș · dată neanunțată" }
       - name: formatie
         label: "Formația"
         type: select
