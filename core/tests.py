@@ -214,6 +214,15 @@ class PlayersAndLineupTests(ContentTestCase):
         self.assertIn("tile-stats", html)
         self.assertIn("Rezerva Acasa", html[html.index("players-foot"):])
 
+    def test_match_tiles_link_and_last5(self):
+        html = self.client.get(reverse("home")).content.decode()
+        upcoming, played = Match.objects.get(frf_id=1227200), Match.objects.get(frf_id=1227060)
+        self.assertIn(f'class="match-tile" href="{upcoming.get_absolute_url()}"', html)
+        self.assertIn(f'class="match-tile" href="{played.get_absolute_url()}"', html)
+        self.assertIn(f'href="{reverse("standings")}"', html)
+        self.assertEqual(html.count("Ultimele 5 rezultate"), 3)
+        self.assertIn("2-1", html, "scorul ultimului meci în lista de rezultate")
+
     def test_no_player_cards_without_lineup(self):
         html = self.client.get(reverse("home")).content.decode()
         self.assertNotIn("player-tile", html)

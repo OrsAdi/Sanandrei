@@ -1,0 +1,82 @@
+{% load football %}
+{# Următorul meci / ultimul rezultat / clasament – carduri în stilul echipei de start #}
+<div class="match-tiles">
+  {% if next_match %}
+  <a class="match-tile" href="{{ next_match.get_absolute_url }}">
+    <div class="mt-front">
+      <div class="mt-label">Următorul meci · Etapa {{ next_match.round }}</div>
+      <div class="mt-meta">{% if next_match.date %}{{ next_match.date|date:"l, j F · H:i" }}{% else %}Dată neanunțată{% endif %}{% if next_match.venue %} · {{ next_match.venue }}{% endif %}</div>
+      <div class="mt-versus">
+        <div class="mt-team"><img src="{{ next_match.home.logo_url }}" alt=""><span>{{ next_match.home.name }}</span></div>
+        <div class="mt-vs">VS</div>
+        <div class="mt-team"><img src="{{ next_match.away.logo_url }}" alt=""><span>{{ next_match.away.name }}</span></div>
+      </div>
+      {% if next_match.date %}
+      <div class="countdown mt-countdown" data-kickoff="{{ next_match.date|date:'c' }}">
+        <div><b data-d>–</b><span>zile</span></div>
+        <div><b data-h>–</b><span>ore</span></div>
+        <div><b data-m>–</b><span>min</span></div>
+        <div><b data-s>–</b><span>sec</span></div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="mt-panel">
+      <div class="mt-panel-title">Ultimele 5 rezultate</div>
+      <div class="mt-forms">
+        <div><span class="mt-form-team">{{ team.name }}</span>{% include "core/_last5_pills.html" with rows=our_last5 %}</div>
+        {% if opponent %}<div><span class="mt-form-team">{{ opponent.name }}</span>{% include "core/_last5_pills.html" with rows=opponent_last5 %}</div>{% endif %}
+      </div>
+      <span class="mt-cta">Detalii meci →</span>
+    </div>
+  </a>
+  {% endif %}
+
+  {% if last_match %}
+  <a class="match-tile" href="{{ last_match.get_absolute_url }}">
+    <div class="mt-front">
+      <div class="mt-label">Ultimul rezultat · Etapa {{ last_match.round }}</div>
+      <div class="mt-meta">{{ last_match.date|date:"l, j F" }}{% if last_match.venue %} · {{ last_match.venue }}{% endif %}</div>
+      <div class="mt-versus">
+        <div class="mt-team"><img src="{{ last_match.home.logo_url }}" alt=""><span>{{ last_match.home.name }}</span></div>
+        <div class="mt-score">{{ last_match.home_score }}<i>-</i>{{ last_match.away_score }}</div>
+        <div class="mt-team"><img src="{{ last_match.away.logo_url }}" alt=""><span>{{ last_match.away.name }}</span></div>
+      </div>
+      {% if last_result %}<div class="mt-result mt-result-{{ last_result }}">{{ last_result|result_label }}</div>{% endif %}
+    </div>
+    <div class="mt-panel">
+      <div class="mt-panel-title">Ultimele 5 rezultate</div>
+      <ul class="mt-list">
+        {% for r in our_last5 %}
+        <li><span class="pill pill-{{ r.result }}">{{ r.result }}</span><span class="mt-opp">{% if r.home %}vs{% else %}la{% endif %} {{ r.opponent.name }}</span><b>{{ r.score }}</b></li>
+        {% endfor %}
+      </ul>
+      <span class="mt-cta">Raportul meciului →</span>
+    </div>
+  </a>
+  {% endif %}
+
+  {% if our_row and our_row.played %}
+  <a class="match-tile mt-standing" href="{% url 'standings' %}">
+    <div class="mt-front">
+      <div class="mt-label">{{ COMPETITION_NAME }} · {{ SEASON }}</div>
+      <div class="mt-meta">Locul în clasament după etapa {{ our_row.played }}</div>
+      <div class="mt-position"><b>{{ our_row.position }}</b><span>/{{ table|length }}</span></div>
+      <div class="mt-numbers">
+        <div><b>{{ our_row.points }}</b><span>Puncte</span></div>
+        <div><b>{{ our_row.won }}-{{ our_row.drawn }}-{{ our_row.lost }}</b><span>V-E-I</span></div>
+        <div><b>{{ our_row.gf }}:{{ our_row.ga }}</b><span>Goluri</span></div>
+      </div>
+    </div>
+    <div class="mt-panel">
+      <div class="mt-panel-title">Ultimele 5 rezultate</div>
+      {% include "core/_last5_pills.html" with rows=our_last5 big=True %}
+      {% if nearby %}
+      <table class="mt-table">
+        {% for r in nearby %}<tr class="{% if r.team.is_ours %}ours{% endif %}"><td>{{ r.position }}</td><td>{{ r.team.name }}</td><td>{{ r.points }}</td></tr>{% endfor %}
+      </table>
+      {% endif %}
+      <span class="mt-cta">Clasamentul complet →</span>
+    </div>
+  </a>
+  {% endif %}
+</div>

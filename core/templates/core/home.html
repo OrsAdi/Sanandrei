@@ -77,51 +77,7 @@
 {% block content %}
 {% if team %}
 {# Următorul meci și ultimul rezultat #}
-<div class="match-strip">
-  {% if next_match %}
-  <div class="match-card">
-    <div class="label">Următorul meci · Etapa {{ next_match.round }}</div>
-    <div class="meta">{% if next_match.date %}{{ next_match.date|date:"l, j F Y · H:i" }} · {% endif %}{{ next_match.venue }}</div>
-    <div class="versus">
-      <div class="team"><img src="{{ next_match.home.logo_url }}" alt=""><div>{{ next_match.home.name }}</div></div>
-      <div class="vs">VS</div>
-      <div class="team"><img src="{{ next_match.away.logo_url }}" alt=""><div>{{ next_match.away.name }}</div></div>
-    </div>
-    {% if next_match.date %}
-    <div class="countdown" data-kickoff="{{ next_match.date|date:'c' }}">
-      <div><b data-d>–</b><span>zile</span></div>
-      <div><b data-h>–</b><span>ore</span></div>
-      <div><b data-m>–</b><span>min</span></div>
-      <div><b data-s>–</b><span>sec</span></div>
-    </div>
-    {% endif %}
-    {% if next_opponent_row %}
-    <p class="small muted center" style="margin:14px 0 0">Adversar: locul {{ next_opponent_row.position }}, {{ next_opponent_row.points }} puncte · formă {% form_pills next_opponent_row.form %}</p>
-    {% endif %}
-    <p class="center" style="margin:16px 0 0"><a class="btn btn-sm" href="{% url 'match_detail' next_match.pk %}">Detalii meci</a>{% if lineup %} <a class="btn btn-sm btn-ghost" href="#primul11">Echipa de start</a>{% endif %}</p>
-  </div>
-  {% endif %}
-  {% if last_match %}
-  <div class="match-card">
-    <div class="label">Ultimul rezultat</div>
-    {% include "core/_last_match.html" %}
-    <p class="center" style="margin:16px 0 0"><a class="btn btn-sm btn-ghost" href="{% url 'match_detail' last_match.pk %}">Raport complet</a></p>
-  </div>
-  {% endif %}
-  {% if our_row and our_row.played %}
-  <div class="match-card standing-card">
-    <div class="label">{{ COMPETITION_NAME }} · {{ SEASON }}</div>
-    <div class="standing-big"><b>{{ our_row.position }}</b><span>/{{ table|length }}</span></div>
-    <div class="standing-row">
-      <div><b>{{ our_row.points }}</b><span>Puncte</span></div>
-      <div><b>{{ our_row.won }}-{{ our_row.drawn }}-{{ our_row.lost }}</b><span>V-E-I</span></div>
-      <div><b>{{ our_row.gf }}:{{ our_row.ga }}</b><span>Goluri</span></div>
-    </div>
-    <p class="center" style="margin:14px 0 0">{% form_pills our_row.form True %}</p>
-    <p class="center" style="margin:16px 0 0"><a class="btn btn-sm btn-ghost" href="{% url 'standings' %}">Clasament</a></p>
-  </div>
-  {% endif %}
-</div>
+{% include "core/_match_tiles.html" %}
 {% endif %}
 
 {% if xi %}{% include "core/_players_carousel.html" %}{% endif %}

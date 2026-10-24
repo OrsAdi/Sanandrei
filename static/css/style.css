@@ -747,3 +747,80 @@ a.caption-title:hover { color: #fff; text-decoration-color: var(--orange); }
   .players-arrows { display: none; }
   .player-tile { flex-basis: 78vw; height: 400px; }
 }
+
+/* --- următorul meci / ultimul rezultat / clasament (stil echipa de start) -- */
+.match-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin-top: 32px; }
+.match-tile {
+  position: relative; display: flex; flex-direction: column; overflow: hidden; color: #fff; isolation: isolate;
+  background: linear-gradient(165deg, var(--orange) 0%, #b84a0e 40%, #3a1606 80%, #120804 100%);
+  box-shadow: 0 14px 34px rgba(16,24,40,.18); transition: transform .25s ease, box-shadow .25s ease;
+}
+.match-tile:nth-child(2) { background: linear-gradient(165deg, #3b404b 0%, #23262e 45%, #0e1014 100%); }
+.match-tile.mt-standing { background: linear-gradient(165deg, #1b1e26 0%, #121419 50%, #3a1606 100%); }
+.match-tile::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: .16;
+  background: repeating-linear-gradient(115deg, transparent 0 22px, #fff 22px 24px, transparent 24px 46px);
+  clip-path: polygon(72% 0, 100% 0, 100% 100%, 52% 100%);
+}
+.match-tile:hover, .match-tile:focus-visible { color: #fff; transform: translateY(-4px); box-shadow: 0 20px 44px rgba(16,24,40,.28); }
+.match-tile:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+
+.mt-front { position: relative; padding: 24px 22px 22px; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 360px; flex: 1; transition: opacity .35s, transform .45s ease; }
+.mt-label { font-family: var(--font-head); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; font-size: 1rem; }
+.match-tile:nth-child(2) .mt-label, .mt-standing .mt-label { color: var(--orange); }
+.mt-meta { font-size: .85rem; color: rgba(255,255,255,.78); margin-top: 3px; }
+.mt-versus { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; width: 100%; margin: 22px 0 16px; }
+.mt-team { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.mt-team img { width: 78px; height: 78px; object-fit: contain; background: #fff; border-radius: 50%; padding: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.3); }
+.mt-team span { font-weight: 800; font-size: .92rem; line-height: 1.2; }
+.mt-vs { font-family: var(--font-head); font-weight: 800; font-size: 1.8rem; color: rgba(255,255,255,.8); }
+.mt-score { font-family: var(--font-head); font-weight: 800; font-size: 3.4rem; line-height: 1; white-space: nowrap; }
+.mt-score i { font-style: normal; margin: 0 6px; color: var(--orange); }
+.mt-result { font-family: var(--font-head); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 5px 16px; border-radius: 99px; }
+.mt-result-V { background: var(--win); } .mt-result-E { background: var(--draw); } .mt-result-I { background: var(--loss); }
+.mt-countdown { margin-top: auto; }
+.mt-countdown div { background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.18); }
+.mt-countdown b { color: #fff; }
+.mt-countdown span { color: rgba(255,255,255,.75); }
+.mt-position { font-family: var(--font-head); font-weight: 800; margin: 18px 0 10px; line-height: 1; }
+.mt-position b { font-size: 7rem; }
+.mt-position span { font-size: 2rem; color: rgba(255,255,255,.6); }
+.mt-numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: auto; border-top: 1px solid rgba(255,255,255,.2); padding-top: 14px; }
+.mt-numbers b { display: block; font-family: var(--font-head); font-weight: 800; font-size: 1.6rem; }
+.mt-numbers span { font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.7); }
+
+/* panoul de la hover */
+.mt-panel {
+  position: absolute; inset: 0; padding: 24px 22px 20px; display: flex; flex-direction: column; gap: 14px;
+  background: linear-gradient(180deg, rgba(10,11,14,.9) 0%, rgba(10,11,14,.97) 100%);
+  transform: translateY(100%); transition: transform .45s cubic-bezier(.2,.7,.2,1);
+}
+.match-tile:hover .mt-panel, .match-tile:focus-visible .mt-panel { transform: none; }
+.match-tile:hover .mt-front, .match-tile:focus-visible .mt-front { transform: translateY(-30px); opacity: 0; }
+.mt-panel-title { font-family: var(--font-head); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--orange); font-size: 1.05rem; border-bottom: 1px solid rgba(255,255,255,.15); padding-bottom: 10px; }
+.mt-forms { display: flex; flex-direction: column; gap: 16px; }
+.mt-form-team { display: block; font-weight: 800; font-size: .9rem; margin-bottom: 8px; }
+.mt-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.mt-pill { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.mt-pill small { font-size: .72rem; color: rgba(255,255,255,.75); font-weight: 700; }
+.mt-pills.big .pill { width: 34px; height: 34px; font-size: 1rem; }
+.mt-none { color: rgba(255,255,255,.6); }
+.mt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.mt-list li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-size: .9rem; }
+.mt-list .mt-opp { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e6e7ea; }
+.mt-list b { font-family: var(--font-head); font-size: 1.15rem; }
+.mt-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.mt-table td { padding: 4px 6px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.mt-table td:first-child { width: 26px; color: rgba(255,255,255,.6); font-weight: 700; }
+.mt-table td:last-child { text-align: right; font-family: var(--font-head); font-weight: 800; font-size: 1rem; }
+.mt-table tr.ours td { color: var(--orange); font-weight: 800; }
+.mt-cta { margin-top: auto; font-family: var(--font-head); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #fff; align-self: flex-start; border-bottom: 2px solid var(--orange); }
+
+/* fără mouse (telefon): rezultatele apar sub card */
+@media (hover: none) {
+  .mt-front { min-height: 0; flex: none; }
+  .mt-countdown, .mt-numbers { margin-top: 6px; }
+  .mt-panel { position: relative; inset: auto; transform: none; background: rgba(10,11,14,.55); }
+  .match-tile:hover .mt-front { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .mt-panel, .mt-front, .match-tile { transition: none; } }

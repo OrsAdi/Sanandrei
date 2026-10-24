@@ -1,0 +1,1 @@
+<span class="mt-pills{% if big %} big{% endif %}">{% for r in rows reversed %}<span class="mt-pill"><span class="pill pill-{{ r.result }}" title="{% if r.home %}vs{% else %}la{% endif %} {{ r.opponent.name }} {{ r.score }}">{{ r.result }}</span><small>{{ r.score }}</small></span>{% empty %}<small class="mt-none">Niciun meci jucat</small>{% endfor %}</span>

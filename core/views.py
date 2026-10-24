@@ -45,6 +45,17 @@ def home(request):
         })
     if team:
         context["xi"] = _player_cards(team, context.get("lineup"))
+        context["our_last5"] = _last5(team)
+        nm = context.get("next_match")
+        if nm:
+            opponent = nm.opponent_of(team)
+            context["opponent"] = opponent
+            context["opponent_last5"] = _last5(opponent)
+        rows = context.get("table") or []
+        idx = next((i for i, r in enumerate(rows) if r.team.pk == team.pk), None)
+        if idx is not None:
+            start = max(0, min(idx - 2, len(rows) - 5))
+            context["nearby"] = rows[start:start + 5]
     context["slides"] = content.slideshow() or _auto_slides(context, published)
     context["featured"] = _featured_cards(published)
     return render(request, "core/home.html", context)
@@ -76,6 +87,18 @@ def _auto_slides(ctx, news):
             "link": item.get_absolute_url(), "button": "Citește", "image": item.image.url,
         })
     return slides
+
+
+def _last5(team):
+    """Ultimele 5 meciuri jucate de o echipă, cel mai recent primul, din perspectiva ei."""
+    played = [m for m in stats.team_matches(team) if m.is_finished][-5:]
+    return [{
+        "match": m,
+        "result": m.result_for(team),
+        "opponent": m.opponent_of(team),
+        "home": m.home_id == team.pk,
+        "score": f"{m.goals_for(team)}-{m.goals_against(team)}",
+    } for m in reversed(played)]
 
 
 ROLE_LABEL = {"portar": "Portar", "fundasi": "Fundaș", "mijlocasi": "Mijlocaș",
