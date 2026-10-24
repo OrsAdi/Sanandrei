@@ -77,14 +77,9 @@ def _auto_slides(ctx, news):
 
 
 def _featured_cards(news):
-    """Cele două carduri de sub slideshow: ultimele știri, completate cu linkuri utile dacă nu sunt destule."""
-    cards = [{"title": n.title, "url": n.get_absolute_url(), "image": n.image.url if n.image else "",
-              "label": "Știri", "date": n.published_at} for n in news[:2]]
-    extras = [
-        {"title": "Program și rezultate", "url": reverse("fixtures"), "label": "Meciuri", "icon": "calendar"},
-        {"title": "Clasamentul ligii", "url": reverse("standings"), "label": "Clasament", "icon": "table"},
-    ]
-    return (cards + extras)[:2]
+    """Cele două carduri de sub slideshow: ultimele două știri publicate (fără știri, cardurile nu apar)."""
+    return [{"title": n.title, "url": n.get_absolute_url(), "image": n.image.url if n.image else "",
+             "label": "Știri", "date": n.published_at} for n in news[:2]]
 
 
 def contact(request):

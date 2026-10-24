@@ -5,7 +5,7 @@
 {% block body_class %}page-home{% endblock %}
 
 {% block hero %}
-<section class="hero-slider" data-slider aria-roledescription="carousel" aria-label="Noutăți {{ CLUB_SHORT_NAME }}">
+<section class="hero-slider{% if not featured %} no-cards{% endif %}" data-slider aria-roledescription="carousel" aria-label="Noutăți {{ CLUB_SHORT_NAME }}">
   <div class="slides">
     {% for s in slides %}
     <article class="slide{% if forloop.first %} is-active{% endif %}{% if not s.image %} no-photo{% endif %}" data-slide aria-roledescription="slide" aria-label="{{ forloop.counter }} din {{ slides|length }}"{% if not forloop.first %} aria-hidden="true"{% endif %}>
@@ -54,13 +54,14 @@
   </div>
 </section>
 
-{# Cele două carduri de sub slideshow (stil fcbarcelona.com) #}
+{# Ultimele două știri, peste partea de jos a slideshow-ului (stil fcbarcelona.com) #}
+{% if featured %}
 <section class="featured">
   <div class="featured-cards">
     {% for c in featured %}
     <a class="feature-card" href="{{ c.url }}">
       <div class="feature-img">
-        {% if c.image %}<img src="{{ c.image }}" alt="" loading="lazy">{% else %}<span class="feature-ph">{% icon c.icon|default:"news" 56 %}</span>{% endif %}
+        {% if c.image %}<img src="{{ c.image }}" alt="" loading="lazy">{% else %}<span class="feature-ph"><img src="{% static 'img/logo.jpg' %}" alt=""></span>{% endif %}
       </div>
       <div class="feature-body">
         <h3>{{ c.title }}</h3>
@@ -70,6 +71,7 @@
     {% endfor %}
   </div>
 </section>
+{% endif %}
 {% endblock %}
 
 {% block content %}

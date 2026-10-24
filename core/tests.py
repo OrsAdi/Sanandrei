@@ -81,11 +81,24 @@ class HomeDesignTests(ContentTestCase):
         self.assertContains(response, "Victorie!")
         self.assertContains(response, 'class="slide-img"')
 
-    def test_automatic_slides_and_cards_without_content(self):
+    def test_automatic_slides_and_no_cards_without_news(self):
         response = self.client.get(reverse("home"))
         self.assertContains(response, "data-slider")
-        self.assertContains(response, "feature-card", count=2)
+        self.assertNotContains(response, "feature-card")
         self.assertContains(response, "<span>Portocaliu</span>")
+
+    def test_cards_are_the_two_latest_news(self):
+        for i, title in enumerate(["Veche", "Mijloc", "Nouă"]):
+            self.write(f"stiri/2026-10-1{i}-x{i}.md", f"---\ntitlu: {title}\ndata: 2026-10-1{i}T10:00\n---\nx")
+        self.write("stiri/2026-10-19-ascunsa.md", "---\ntitlu: Ascunsă\ndata: 2026-10-19T10:00\npublicat: false\n---\nx")
+        call_command("load_content", stdout=open("/dev/null", "w"))
+        html = self.client.get(reverse("home")).content.decode()
+        cards = html[html.index('class="featured"'):html.index("</section>", html.index('class="featured"'))]
+        self.assertEqual(cards.count("feature-card"), 2)
+        self.assertIn("Nouă", cards)
+        self.assertIn("Mijloc", cards)
+        self.assertNotIn("Veche", cards)
+        self.assertNotIn("Ascunsă", cards)
 
     def test_site_link_prefix(self):
         with override_settings(SITE_URL_PREFIX="/Sanandrei/"):

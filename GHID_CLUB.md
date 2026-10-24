@@ -64,7 +64,9 @@ dacă vreți, un **Titlu** (textul mare de pe poză), o **Etichetă** (ex. „Me
 (ex. `/stiri/` sau `/meciuri/`). Pozele se schimbă singure la câteva secunde. Ca să scoateți o poză fără să o
 ștergeți, debifați **Afișat**. Cât timp nu există nicio poză, prima pagină arată automat clubul și următorul meci.
 
-Cele două carduri de sub poze sunt ultimele două știri publicate (cu poza lor principală).
+Cele două carduri de sub poze sunt **ultimele două știri publicate**, cu poza lor principală (fără poză apare
+sigla clubului). Când publicați o știre nouă, ea intră prima, iar cea mai veche dintre cele două iese. Cât timp nu
+există nicio știre, cardurile nu apar.
 
 ## Sponsori și setări
 
