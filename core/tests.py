@@ -214,10 +214,10 @@ class PlayersAndLineupTests(ContentTestCase):
         self.assertIn("tile-stats", html)
         self.assertIn("Rezerva Acasa", html[html.index("players-foot"):])
 
-    def test_home_player_cards_without_lineup_show_squad(self):
+    def test_no_player_cards_without_lineup(self):
         html = self.client.get(reverse("home")).content.decode()
-        self.assertIn("Jucătorii noștri", html)
-        self.assertEqual(html.count('class="player-tile'), 12, "titularii + rezerva folosită")
+        self.assertNotIn("player-tile", html)
+        self.assertNotIn("players-band", html)
 
     def test_unpublished_lineup_hidden(self):
         self.write("primul11.yml", "publicat: false\netapa: 7\nportar: '1'\n")

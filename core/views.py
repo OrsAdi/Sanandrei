@@ -84,26 +84,20 @@ ROLE_LABEL = {"portar": "Portar", "fundasi": "Fundaș", "mijlocasi": "Mijlocaș"
 
 def _player_cards(team, lineup):
     """
-    Cardurile de jucători de pe prima pagină (stil fcbarcelona.com).
-    Cu echipa de start anunțată: cei 11, de la portar la atacanți. Altfel: jucătorii folosiți în sezon.
+    Cardurile cu echipa de start de pe prima pagină (stil fcbarcelona.com), de la portar la atacanți.
+    Fără echipă de start anunțată pentru următorul meci, secțiunea nu apare.
     """
-    if lineup:
-        order = [(p, ROLE_LABEL.get(row["key"], "")) for row in reversed(lineup["rows"]) for p in row["players"]]
-        by_id = {p.pk: p for p in stats.player_stats(team=team, players=[p for p, _ in order])}
-        players = [(by_id[p.pk], role) for p, role in order if p.pk in by_id]
-        title, subtitle = "Echipa de start", f"Formația {lineup['formation']}"
-    else:
-        used = [p for p in stats.player_stats(team=team) if p.apps and p.team_id == team.pk]
-        used.sort(key=lambda p: (-p.minutes, p.name))
-        players = [(p, p.position) for p in used]
-        title, subtitle = "Jucătorii noștri", f"{len(players)} jucători folosiți în acest sezon"
+    if not lineup:
+        return None
+    order = [(p, ROLE_LABEL.get(row["key"], "")) for row in reversed(lineup["rows"]) for p in row["players"]]
+    by_id = {p.pk: p for p in stats.player_stats(team=team, players=[p for p, _ in order])}
+    players = [(by_id[p.pk], role) for p, role in order if p.pk in by_id]
     if not players:
         return None
     return {
-        "title": title, "subtitle": subtitle, "is_lineup": bool(lineup),
+        "title": "Echipa de start", "subtitle": f"Formația {lineup['formation']}", "is_lineup": True,
         "cards": [{"player": p, "role": role} for p, role in players],
-        "bench": lineup["bench"] if lineup else [],
-        "coach": lineup["coach"] if lineup else "",
+        "bench": lineup["bench"], "coach": lineup["coach"],
     }
 
 

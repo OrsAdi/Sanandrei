@@ -52,7 +52,8 @@ Postul decide în ce grupă apare jucătorul pe pagina „Lot” (Portari, Funda
 pe cardul jucătorului de pe prima pagină; cel mai bine arată o poză portret, cu jucătorul de la brâu în sus, pe un
 fundal simplu. Fără poză, cardul arată un tricou cu numărul jucătorului.
 
-Când nu este anunțată nicio echipă de start, pe prima pagină apar toți jucătorii folosiți în sezon.
+Pe prima pagină apar doar cei 11 din echipa de start. Când nu e anunțată nicio echipă pentru următorul meci,
+secțiunea nu apare.
 
 ## Magazin
 
