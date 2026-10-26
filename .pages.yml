@@ -72,7 +72,7 @@ content:
         options:
           placeholder: Alegeți meciul
           values:
-            - { name: "11", label: "Etapa 11 · CS Sânandrei Timiș – Club Sportiv Giroc-Chisoda · dată neanunțată" }
+            - { name: "11", label: "Etapa 11 · CS Sânandrei Timiș – Club Sportiv Giroc-Chisoda · sâm 31.10, 11:00" }
             - { name: "12", label: "Etapa 12 · CS Unirea Sânnicolau Mare – CS Sânandrei Timiș · dată neanunțată" }
             - { name: "13", label: "Etapa 13 · CS Sânandrei Timiș – CSM Lugoj · dată neanunțată" }
             - { name: "14", label: "Etapa 14 · CSC Ghiroda și Giarmata Vii – CS Sânandrei Timiș · dată neanunțată" }
