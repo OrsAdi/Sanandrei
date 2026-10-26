@@ -46,6 +46,7 @@ def home(request):
     if team:
         context["xi"] = _player_cards(team, context.get("lineup"))
         context["our_last5"] = _last5(team)
+        context["season"] = _season_details(team)
         nm = context.get("next_match")
         if nm:
             opponent = nm.opponent_of(team)
@@ -99,6 +100,27 @@ def _last5(team):
         "home": m.home_id == team.pk,
         "score": f"{m.goals_for(team)}-{m.goals_against(team)}",
     } for m in reversed(played)]
+
+
+def _season_details(team):
+    """Detaliile din spatele cardurilor „Sezonul în cifre” (apar la hover)."""
+    played = [m for m in stats.team_matches(team) if m.is_finished]
+    newest = list(reversed(played))
+    row = lambda m: {"match": m, "result": m.result_for(team), "opponent": m.opponent_of(team),  # noqa: E731
+                     "home": m.home_id == team.pk, "score": f"{m.goals_for(team)}-{m.goals_against(team)}"}
+    unbeaten = []
+    for m in newest:
+        if m.result_for(team) == "I":
+            break
+        unbeaten.append(row(m))
+    summary = stats.team_summary(team, played)
+    return {
+        "biggest_win": row(summary["biggest_win"][0]) if summary["biggest_win"] else None,
+        "biggest_loss": row(summary["biggest_loss"][0]) if summary["biggest_loss"] else None,
+        "clean_sheets": [row(m) for m in newest if m.goals_against(team) == 0],
+        "unbeaten": unbeaten,
+        "top_scorer": next(iter(stats.top_scorers(limit=1, team=team)), None),
+    }
 
 
 ROLE_LABEL = {"portar": "Portar", "fundasi": "Fundaș", "mijlocasi": "Mijlocaș",

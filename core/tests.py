@@ -223,6 +223,12 @@ class PlayersAndLineupTests(ContentTestCase):
         self.assertEqual(html.count("Ultimele 5 rezultate"), 3)
         self.assertIn("2-1", html, "scorul ultimului meci în lista de rezultate")
 
+    def test_season_tiles(self):
+        html = self.client.get(reverse("home")).content.decode()
+        self.assertEqual(html.count('class="stat-tile"'), 6)
+        self.assertIn("Cea mai mare victorie: <b>2-1</b>", html, "scorul din perspectiva noastră")
+        self.assertIn("Acasă vs deplasare", html)
+
     def test_no_player_cards_without_lineup(self):
         html = self.client.get(reverse("home")).content.decode()
         self.assertNotIn("player-tile", html)

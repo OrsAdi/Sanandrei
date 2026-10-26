@@ -1,0 +1,63 @@
+{% load football %}
+{# Sezonul în cifre – carduri cu detalii la hover (stilul cardurilor de meci) #}
+<section class="season-block">
+  <div class="card-title"><h2>Sezonul în cifre</h2><a href="{% url 'stats' %}">Statistici complete →</a></div>
+  <div class="season-tiles">
+    <a class="stat-tile" href="{% url 'stats' %}">
+      <div class="st-front"><b>{{ summary.win_pct }}%</b><span>Victorii</span></div>
+      <div class="st-panel">
+        <div class="st-title">{{ summary.played }} meciuri jucate</div>
+        <div class="st-split"><div><b>{{ summary.won }}</b><span>Victorii</span></div><div><b>{{ summary.drawn }}</b><span>Egaluri</span></div><div><b>{{ summary.lost }}</b><span>Înfrângeri</span></div></div>
+        {% include "core/_last5_pills.html" with rows=our_last5 %}
+      </div>
+    </a>
+
+    <a class="stat-tile" href="{% url 'stats' %}">
+      <div class="st-front"><b>{{ summary.gf_avg|floatformat:1 }}</b><span>Goluri / meci</span></div>
+      <div class="st-panel">
+        <div class="st-title">{{ summary.gf }} goluri marcate</div>
+        <div class="st-split"><div><b>{{ summary.home.gf }}</b><span>Acasă</span></div><div><b>{{ summary.away.gf }}</b><span>Deplasare</span></div></div>
+        {% if season.top_scorer %}<p class="st-line">Golgheter: <b>{{ season.top_scorer.player.name }}</b> ({{ season.top_scorer.goals }})</p>{% endif %}
+        {% if season.biggest_win %}<p class="st-line">Cea mai mare victorie: <b>{{ season.biggest_win.score }}</b> {% if season.biggest_win.home %}cu{% else %}la{% endif %} {{ season.biggest_win.opponent.name }}</p>{% endif %}
+      </div>
+    </a>
+
+    <a class="stat-tile" href="{% url 'stats' %}">
+      <div class="st-front"><b>{{ summary.ga_avg|floatformat:1 }}</b><span>Primite / meci</span></div>
+      <div class="st-panel">
+        <div class="st-title">{{ summary.ga }} goluri primite</div>
+        <div class="st-split"><div><b>{{ summary.home.ga }}</b><span>Acasă</span></div><div><b>{{ summary.away.ga }}</b><span>Deplasare</span></div></div>
+        <p class="st-line">Golaveraj: <b>{% if summary.gd > 0 %}+{% endif %}{{ summary.gd }}</b></p>
+        {% if season.biggest_loss %}<p class="st-line">Cea mai grea înfrângere: <b>{{ season.biggest_loss.score }}</b> {% if season.biggest_loss.home %}cu{% else %}la{% endif %} {{ season.biggest_loss.opponent.name }}</p>{% endif %}
+      </div>
+    </a>
+
+    <a class="stat-tile" href="{% url 'stats' %}">
+      <div class="st-front"><b>{{ summary.clean_sheets }}</b><span>Fără gol primit</span></div>
+      <div class="st-panel">
+        <div class="st-title">Meciuri fără gol primit</div>
+        {% include "core/_stat_list.html" with rows=season.clean_sheets empty="Încă niciun meci fără gol primit." %}
+      </div>
+    </a>
+
+    <a class="stat-tile" href="{% url 'fixtures' %}">
+      <div class="st-front"><b>{{ summary.unbeaten }}</b><span>Meciuri fără înfrângere</span></div>
+      <div class="st-panel">
+        <div class="st-title">Seria actuală</div>
+        {% include "core/_stat_list.html" with rows=season.unbeaten empty="Ultimul meci a fost o înfrângere." %}
+      </div>
+    </a>
+
+    <a class="stat-tile" href="{% url 'stats' %}">
+      <div class="st-front"><b>{{ summary.home.won }}/{{ summary.home.played }}</b><span>Victorii acasă</span></div>
+      <div class="st-panel">
+        <div class="st-title">Acasă vs deplasare</div>
+        <table class="st-table">
+          <tr><th></th><th>V</th><th>E</th><th>I</th><th>Gol.</th></tr>
+          <tr><td>Acasă</td><td>{{ summary.home.won }}</td><td>{{ summary.home.drawn }}</td><td>{{ summary.home.lost }}</td><td>{{ summary.home.gf }}:{{ summary.home.ga }}</td></tr>
+          <tr><td>Deplasare</td><td>{{ summary.away.won }}</td><td>{{ summary.away.drawn }}</td><td>{{ summary.away.lost }}</td><td>{{ summary.away.gf }}:{{ summary.away.ga }}</td></tr>
+        </table>
+      </div>
+    </a>
+  </div>
+</section>

@@ -824,3 +824,58 @@ a.caption-title:hover { color: #fff; text-decoration-color: var(--orange); }
   .match-tile:hover .mt-front { transform: none; opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) { .mt-panel, .mt-front, .match-tile { transition: none; } }
+
+/* --- Sezonul în cifre (stilul cardurilor de meci) -------------------------- */
+.season-block { margin-top: 24px; }
+.season-block .card-title { margin-bottom: 12px; }
+.season-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stat-tile {
+  position: relative; display: block; min-height: 190px; overflow: hidden; color: #fff; isolation: isolate;
+  background: linear-gradient(165deg, var(--orange) 0%, #b84a0e 45%, #3a1606 100%);
+  box-shadow: 0 10px 26px rgba(16,24,40,.16); transition: transform .25s ease, box-shadow .25s ease;
+}
+.stat-tile:nth-child(even) { background: linear-gradient(165deg, #3b404b 0%, #23262e 50%, #0e1014 100%); }
+.stat-tile::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: .15;
+  background: repeating-linear-gradient(115deg, transparent 0 18px, #fff 18px 20px, transparent 20px 38px);
+  clip-path: polygon(70% 0, 100% 0, 100% 100%, 50% 100%);
+}
+.stat-tile:hover, .stat-tile:focus-visible { color: #fff; transform: translateY(-4px); box-shadow: 0 16px 34px rgba(16,24,40,.26); }
+.stat-tile:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+.st-front { min-height: 190px; padding: 20px; display: flex; flex-direction: column; justify-content: flex-end; transition: opacity .3s, transform .4s ease; }
+.st-front b { font-family: var(--font-head); font-weight: 800; font-size: clamp(2.6rem, 4.4vw, 3.6rem); line-height: 1; }
+.st-front span { margin-top: 6px; font-family: var(--font-head); font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; font-size: .92rem; color: rgba(255,255,255,.85); }
+.stat-tile:nth-child(even) .st-front span { color: var(--orange); }
+.st-panel {
+  position: absolute; inset: 0; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 9px;
+  background: rgba(10,11,14,.96); transform: translateY(100%); transition: transform .42s cubic-bezier(.2,.7,.2,1);
+  font-size: .82rem;
+}
+.stat-tile:hover .st-panel, .stat-tile:focus-visible .st-panel { transform: none; }
+.stat-tile:hover .st-front, .stat-tile:focus-visible .st-front { opacity: 0; transform: translateY(-24px); }
+.st-title { font-family: var(--font-head); font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--orange); font-size: .95rem; border-bottom: 1px solid rgba(255,255,255,.15); padding-bottom: 7px; }
+.st-split { display: flex; gap: 14px; }
+.st-split div { display: flex; flex-direction: column; }
+.st-split b { font-family: var(--font-head); font-weight: 800; font-size: 1.6rem; line-height: 1; }
+.st-split span { font-size: .68rem; text-transform: uppercase; letter-spacing: .8px; color: rgba(255,255,255,.65); }
+.st-line { margin: 0; color: #d9dbe0; line-height: 1.35; }
+.st-line b { color: #fff; }
+.st-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.st-list li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 7px; }
+.st-list .pill { width: 20px; height: 20px; font-size: .68rem; }
+.st-opp { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e6e7ea; }
+.st-list b { font-family: var(--font-head); font-size: 1rem; }
+.st-table { width: 100%; border-collapse: collapse; }
+.st-table th { font-size: .68rem; color: rgba(255,255,255,.6); font-weight: 700; text-align: center; padding: 2px 4px; }
+.st-table td { padding: 5px 4px; text-align: center; font-family: var(--font-head); font-weight: 800; font-size: 1rem; border-top: 1px solid rgba(255,255,255,.1); }
+.st-table td:first-child { text-align: left; font-family: var(--font-body); font-size: .8rem; font-weight: 700; color: #e6e7ea; }
+.stat-tile .mt-pills { gap: 6px; }
+.stat-tile .mt-pills .pill { width: 24px; height: 24px; }
+@media (max-width: 680px) { .season-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (hover: none) {
+  .stat-tile { min-height: 0; }
+  .st-front { min-height: 120px; }
+  .st-panel { position: relative; inset: auto; transform: none; background: rgba(10,11,14,.55); }
+  .stat-tile:hover .st-front { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .st-panel, .st-front, .stat-tile { transition: none; } }

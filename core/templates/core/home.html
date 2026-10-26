@@ -105,19 +105,7 @@
       {% for m in recent %}{% include "teams/_fixture.html" with m=m result=m.our_result %}{% empty %}<p class="muted">Niciun meci disputat încă.</p>{% endfor %}
     </div>
 
-    {% if summary.played %}
-    <div class="card">
-      <div class="card-title"><h2>Sezonul în cifre</h2><a href="{% url 'stats' %}">Statistici complete →</a></div>
-      <div class="tiles">
-        <div class="tile"><b>{{ summary.win_pct }}%</b><span>Victorii</span></div>
-        <div class="tile"><b>{{ summary.gf_avg }}</b><span>Goluri / meci</span></div>
-        <div class="tile"><b>{{ summary.ga_avg }}</b><span>Primite / meci</span></div>
-        <div class="tile"><b>{{ summary.clean_sheets }}</b><span>Fără gol primit</span></div>
-        <div class="tile"><b>{{ summary.unbeaten }}</b><span>Meciuri fără înfrângere</span></div>
-        <div class="tile"><b>{{ summary.home.won }}/{{ summary.home.played }}</b><span>Victorii acasă</span></div>
-      </div>
-    </div>
-    {% endif %}
+    {% if summary.played %}{% include "core/_season_tiles.html" %}{% endif %}
 
     {% if news %}
     <h2 class="section-title">Știri <a class="small" href="{% url 'news_list' %}">Toate →</a></h2>

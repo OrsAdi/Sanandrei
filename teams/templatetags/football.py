@@ -35,3 +35,9 @@ def signed(value):
 @register.inclusion_tag("teams/_form.html")
 def form_pills(results, large=False):
     return {"results": results, "large": large}
+
+
+@register.filter
+def opponent_name(match, team):
+    """Numele adversarului echipei date într-un meci."""
+    return match.opponent_of(team).name if match and team else ""
