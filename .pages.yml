@@ -72,7 +72,7 @@ content:
         options:
           placeholder: Alegeți meciul
           values:
-            - { name: "13", label: "Etapa 13 · CS Sânandrei Timiș – CSM Lugoj · dată neanunțată" }
+            - { name: "13", label: "Etapa 13 · CS Sânandrei Timiș – CSM Lugoj · sâm 14.11, 11:00" }
             - { name: "14", label: "Etapa 14 · CSC Ghiroda și Giarmata Vii – CS Sânandrei Timiș · dată neanunțată" }
             - { name: "15", label: "Etapa 15 · CS Sânandrei Timiș – CS Flacăra Parța · dată neanunțată" }
             - { name: "16", label: "Etapa 16 · CS Avântul Periam – CS Sânandrei Timiș · dată neanunțată" }
