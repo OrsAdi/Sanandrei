@@ -72,12 +72,12 @@ content:
         options:
           placeholder: Alegeți meciul
           values:
-            - { name: "15", label: "Etapa 15 · CS Sânandrei Timiș – CS Flacăra Parța · sâm 28.11, 11:00" }
             - { name: "16", label: "Etapa 16 · CS Avântul Periam – CS Sânandrei Timiș · dată neanunțată" }
             - { name: "17", label: "Etapa 17 · CS Sânandrei Timiș – CSU Universitatea de Vest din Timișoara · dată neanunțată" }
             - { name: "18", label: "Etapa 18 · CSC Milenium Giarmata – CS Sânandrei Timiș · dată neanunțată" }
             - { name: "19", label: "Etapa 19 · CS Sânandrei Timiș – CSO Deta · dată neanunțată" }
             - { name: "20", label: "Etapa 20 · CSC Săcălaz – CS Sânandrei Timiș · dată neanunțată" }
+            - { name: "21", label: "Etapa 21 · CS Sânandrei Timiș – CS Gloria Moșnița Nouă · dată neanunțată" }
       - name: formatie
         label: "Formația"
         type: select
